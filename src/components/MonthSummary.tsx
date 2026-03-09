@@ -49,21 +49,25 @@ export default function MonthSummary({ summary, salary, overdraft }: Props) {
       </span>
 
       {/* Budget réel breakdown */}
-      <div className="space-y-0">
-        <Row label="Salaire" value={formatEur(salary)} />
-        <Row label="Autres revenus" value={`+ ${formatEur(summary.totalIncomes)}`} valueClass="text-emerald-400" />
-        <Row label="Découvert" value={`− ${formatEur(overdraft)}`} valueClass="text-red-400" />
-        <div className="border-t-2 border-zinc-700/50 my-1" />
+      <div>
+        <div className="divide-y divide-zinc-800">
+          <Row label="Salaire" value={formatEur(salary)} />
+          <Row label="Autres revenus" value={`+ ${formatEur(summary.totalIncomes)}`} valueClass="text-emerald-400" />
+          <Row label="Découvert" value={`− ${formatEur(overdraft)}`} valueClass="text-red-400" />
+        </div>
+        <div className="border-t-2 border-zinc-700/50 mt-1" />
         <Row label="Budget réel" value={formatEur(summary.budgetReel)} labelClass="font-semibold text-zinc-200" valueClass="text-base font-bold" />
       </div>
 
       {/* Expenses breakdown */}
-      <div className="space-y-0 mt-4">
-        <Row label="Charges récurrentes" value={`− ${formatEur(summary.totalRecurring)}`} valueClass="text-red-400" />
-        <Row label="Every day life" value={`− ${formatEur(summary.totalEveryday)}`} valueClass="text-red-400" />
-        <Row label="Divers" value={`− ${formatEur(summary.totalDiverse)}`} valueClass="text-red-400" />
-        <Row label="Épargne" value={`− ${formatEur(summary.totalSavings)}`} valueClass="text-red-400" />
-        <div className="border-t-2 border-zinc-700/50 my-1" />
+      <div className="mt-4">
+        <div className="divide-y divide-zinc-800">
+          <Row label="Charges récurrentes" value={`− ${formatEur(summary.totalRecurring)}`} valueClass="text-red-400" />
+          <Row label="Every day life" value={`− ${formatEur(summary.totalEveryday)}`} valueClass="text-red-400" />
+          <Row label="Divers" value={`− ${formatEur(summary.totalDiverse)}`} valueClass="text-red-400" />
+          <Row label="Épargne" value={`− ${formatEur(summary.totalSavings)}`} valueClass="text-red-400" />
+        </div>
+        <div className="border-t-2 border-zinc-700/50 mt-1" />
         <div className="flex justify-between items-center py-3 text-base font-bold">
           <span>Reste</span>
           <span className={resteColor[summary.status]}>{formatEur(summary.reste)}</span>
@@ -99,7 +103,7 @@ function Row({
   valueClass?: string;
 }) {
   return (
-    <div className="flex justify-between items-center py-2.5 border-b border-zinc-800 last:border-none">
+    <div className="flex justify-between items-center py-2.5">
       <span className={`text-sm ${labelClass}`}>{label}</span>
       <span className={`text-sm tabular-nums ${valueClass}`}>{value}</span>
     </div>

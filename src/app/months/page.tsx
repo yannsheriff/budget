@@ -1,26 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { MonthData } from "@/types";
 import { calculateMonthSummary } from "@/lib/budget-calc";
 import { getMonthLabel } from "@/lib/weeks";
 import { formatEur } from "@/lib/formatters";
+import ImportExcel from "@/components/ImportExcel";
 
 export default function MonthsListPage() {
   const router = useRouter();
   const [months, setMonths] = useState<MonthData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      const res = await fetch("/api/months");
-      const data = await res.json();
-      setMonths(data);
-      setLoading(false);
-    }
-    load();
+  const load = useCallback(async () => {
+    const res = await fetch("/api/months");
+    const data = await res.json();
+    setMonths(data);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   if (loading) {
     return (
@@ -33,6 +35,8 @@ export default function MonthsListPage() {
   return (
     <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h1 className="text-2xl font-bold tracking-tight mb-6">Tous les mois</h1>
+
+      <ImportExcel onImported={load} />
 
       {months.length === 0 && (
         <div className="text-center py-16">

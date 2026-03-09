@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { updateMonth } from "@/lib/api";
+import { useToast } from "@/components/Toast";
 
 type Props = {
   monthId: string;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export default function MonthFields({ monthId, salary, overdraft, onUpdate }: Props) {
+  const { toast } = useToast();
   const [salaryVal, setSalaryVal] = useState(salary.toString());
   const [overdraftVal, setOverdraftVal] = useState(overdraft.toString());
 
@@ -22,16 +24,26 @@ export default function MonthFields({ monthId, salary, overdraft, onUpdate }: Pr
   async function handleSalaryBlur() {
     const newVal = parseFloat(salaryVal) || 0;
     if (newVal !== salary) {
-      await updateMonth(monthId, { salary: newVal });
-      onUpdate();
+      try {
+        await updateMonth(monthId, { salary: newVal });
+        onUpdate();
+      } catch (err) {
+        toast((err as Error).message || "Erreur de mise à jour", "error");
+        setSalaryVal(salary.toString());
+      }
     }
   }
 
   async function handleOverdraftBlur() {
     const newVal = parseFloat(overdraftVal) || 0;
     if (newVal !== overdraft) {
-      await updateMonth(monthId, { overdraft: newVal });
-      onUpdate();
+      try {
+        await updateMonth(monthId, { overdraft: newVal });
+        onUpdate();
+      } catch (err) {
+        toast((err as Error).message || "Erreur de mise à jour", "error");
+        setOverdraftVal(overdraft.toString());
+      }
     }
   }
 

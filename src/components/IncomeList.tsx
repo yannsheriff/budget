@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IncomeData } from "@/types";
 import { formatEur } from "@/lib/formatters";
 import { createIncome, deleteIncome } from "@/lib/api";
+import { useToast } from "@/components/Toast";
 
 type Props = {
   incomes: IncomeData[];
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
+  const { toast } = useToast();
   const [isAdding, setIsAdding] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [newAmount, setNewAmount] = useState("");
@@ -20,16 +22,24 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
 
   async function handleAdd() {
     if (!newLabel || !newAmount) return;
-    await createIncome({ monthId, label: newLabel, amount: parseFloat(newAmount) });
-    setNewLabel("");
-    setNewAmount("");
-    setIsAdding(false);
-    onUpdate();
+    try {
+      await createIncome({ monthId, label: newLabel, amount: parseFloat(newAmount) });
+      setNewLabel("");
+      setNewAmount("");
+      setIsAdding(false);
+      onUpdate();
+    } catch (err) {
+      toast((err as Error).message || "Erreur lors de l'ajout", "error");
+    }
   }
 
   async function handleDelete(id: string) {
-    await deleteIncome(id);
-    onUpdate();
+    try {
+      await deleteIncome(id);
+      onUpdate();
+    } catch (err) {
+      toast((err as Error).message || "Erreur lors de la suppression", "error");
+    }
   }
 
   return (
@@ -56,7 +66,7 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
               </span>
               <button
                 onClick={() => handleDelete(income.id)}
-                className="opacity-0 group-hover:opacity-100 w-7 h-7 rounded-md flex items-center justify-center text-zinc-500 hover:bg-red-500/10 hover:text-red-400 transition-all text-sm"
+                className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-md flex items-center justify-center text-zinc-500 hover:bg-red-500/10 hover:text-red-400 transition-all text-sm"
                 title="Supprimer"
               >
                 ✕

@@ -11,6 +11,7 @@ import IncomeList from "@/components/IncomeList";
 import ExpenseList from "@/components/ExpenseList";
 import EverydayLifeInput from "@/components/EverydayLifeInput";
 import ConfirmBanner from "@/components/ConfirmBanner";
+import InstallmentForm from "@/components/InstallmentForm";
 
 export default function MonthPage() {
   const params = useParams();
@@ -62,7 +63,7 @@ export default function MonthPage() {
       </aside>
 
       {/* Main content */}
-      <main className="lg:ml-80 flex-1 p-6 lg:p-8 max-w-[900px]">
+      <main className="lg:ml-80 flex-1 px-4 py-5 sm:p-6 lg:p-8 max-w-[900px]">
         {/* Month navigation */}
         <MonthNav year={monthData.year} month={monthData.month} />
 
@@ -130,8 +131,12 @@ export default function MonthPage() {
           month={monthData.month}
           title="Dépenses diverses"
           icon="🛍️"
+          showCategory
           onUpdate={fetchMonth}
         />
+
+        {/* Installment form */}
+        <InstallmentForm monthId={monthData.id} onCreated={fetchMonth} />
 
         {/* Savings */}
         <ExpenseList
@@ -142,6 +147,7 @@ export default function MonthPage() {
           month={monthData.month}
           title="Épargne"
           icon="🏦"
+          showCategory
           onUpdate={fetchMonth}
         />
 

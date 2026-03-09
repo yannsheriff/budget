@@ -2,6 +2,7 @@
 
 import { ExpenseData } from "@/types";
 import { updateExpense, updateMonth } from "@/lib/api";
+import { useToast } from "@/components/Toast";
 
 type Props = {
   monthId: string;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function ConfirmBanner({ monthId, expenses, onUpdate }: Props) {
+  const { toast } = useToast();
   const unconfirmed = expenses.filter(
     (e) => e.type === "RECURRING" && !e.isConfirmed
   );
@@ -17,11 +19,16 @@ export default function ConfirmBanner({ monthId, expenses, onUpdate }: Props) {
   if (unconfirmed.length === 0) return null;
 
   async function handleConfirmAll() {
-    await Promise.all(
-      unconfirmed.map((e) => updateExpense(e.id, { isConfirmed: true }))
-    );
-    await updateMonth(monthId, { isConfirmed: true });
-    onUpdate();
+    try {
+      await Promise.all(
+        unconfirmed.map((e) => updateExpense(e.id, { isConfirmed: true }))
+      );
+      await updateMonth(monthId, { isConfirmed: true });
+      toast("Toutes les charges confirmées !");
+      onUpdate();
+    } catch (err) {
+      toast((err as Error).message || "Erreur lors de la confirmation", "error");
+    }
   }
 
   return (

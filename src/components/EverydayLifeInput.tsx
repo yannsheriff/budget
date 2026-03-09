@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { formatEur } from "@/lib/formatters";
 import { getWeeksInMonth } from "@/lib/weeks";
 import { updateMonth } from "@/lib/api";
+import { useToast } from "@/components/Toast";
 
 type Props = {
   monthId: string;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export default function EverydayLifeInput({ monthId, year, month, weeklyBudget, onUpdate }: Props) {
+  const { toast } = useToast();
   const [value, setValue] = useState(weeklyBudget.toString());
   const weeks = getWeeksInMonth(year, month);
   const numValue = parseFloat(value) || 0;
@@ -26,8 +28,13 @@ export default function EverydayLifeInput({ monthId, year, month, weeklyBudget, 
   async function handleBlur() {
     const newVal = parseFloat(value) || 0;
     if (newVal !== weeklyBudget) {
-      await updateMonth(monthId, { weeklyEverydayBudget: newVal });
-      onUpdate();
+      try {
+        await updateMonth(monthId, { weeklyEverydayBudget: newVal });
+        onUpdate();
+      } catch (err) {
+        toast((err as Error).message || "Erreur de mise à jour", "error");
+        setValue(weeklyBudget.toString());
+      }
     }
   }
 

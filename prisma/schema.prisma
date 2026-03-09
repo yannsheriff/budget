@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── MOIS ────────────────────────────────────────────
+
+model Month {
+  id                   String    @id @default(cuid())
+  year                 Int
+  month                Int       // 1-12
+  salary               Decimal   @default(0) @db.Decimal(10, 2)
+  overdraft            Decimal   @default(0) @db.Decimal(10, 2)
+  weeklyEverydayBudget Decimal   @default(0) @db.Decimal(10, 2)
+  isConfirmed          Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  expenses Expense[]
+  incomes  Income[]
+
+  @@unique([year, month])
+  @@map("months")
+}
+
+// ─── REVENUS ADDITIONNELS ────────────────────────────
+
+model Income {
+  id        String   @id @default(cuid())
+  monthId   String
+  label     String
+  amount    Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@map("incomes")
+}
+
+// ─── DÉPENSES (tous types) ───────────────────────────
+
+enum ExpenseType {
+  RECURRING
+  DIVERSE
+  SAVINGS
+}
+
+enum ExpenseFrequency {
+  MONTHLY
+  WEEKLY
+}
+
+model Expense {
+  id            String           @id @default(cuid())
+  monthId       String
+  type          ExpenseType
+  label         String
+  amount        Decimal          @db.Decimal(10, 2)
+  frequency     ExpenseFrequency @default(MONTHLY)
+  category      String?
+  isConfirmed   Boolean          @default(false)
+  isRemainder   Boolean          @default(false)
+  installmentId String?
+  createdAt     DateTime         @default(now())
+
+  month       Month        @relation(fields: [monthId], references: [id], onDelete: Cascade)
+  installment Installment? @relation(fields: [installmentId], references: [id], onDelete: SetNull)
+
+  @@map("expenses")
+}
+
+// ─── PAIEMENTS ÉCHELONNÉS ────────────────────────────
+
+model Installment {
+  id          String   @id @default(cuid())
+  label       String
+  totalAmount Decimal  @db.Decimal(10, 2)
+  nbMonths    Int
+  startYear   Int
+  startMonth  Int
+  createdAt   DateTime @default(now())
+
+  expenses Expense[]
+
+  @@map("installments")
+}

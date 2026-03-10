@@ -50,3 +50,17 @@ input[type="number"] {
 .animate-shake {
   animation: shake 0.4s ease-out;
 }
+
+/* Drawer slide-in from right */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s ease-out;
+}

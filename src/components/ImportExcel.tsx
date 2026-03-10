@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/components/Toast";
 
 type ImportSummary = {
   year: number;
   month: number;
+  monthId: string;
   salary: number;
   overdraft: number;
   recurringCount: number;
@@ -27,6 +29,7 @@ const MONTH_NAMES = [
 
 export default function ImportExcel({ onImported }: Props) {
   const { toast } = useToast();
+  const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -138,6 +141,12 @@ export default function ImportExcel({ onImported }: Props) {
             {result.savingsTotal > 0 && <span>Épargne : {result.savingsTotal} €</span>}
             {result.incomesCount > 0 && <span>{result.incomesCount} autre(s) revenu(s)</span>}
           </div>
+          <button
+            onClick={() => router.push(`/month/${result.monthId}?categorize=1`)}
+            className="mt-3 text-xs font-medium text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+          >
+            🏷️ Catégoriser les dépenses →
+          </button>
         </div>
       )}
     </div>

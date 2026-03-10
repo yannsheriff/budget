@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { MonthData } from "@/types";
 import { calculateMonthSummary } from "@/lib/budget-calc";
 import MonthSummary from "@/components/MonthSummary";
@@ -12,13 +12,23 @@ import ExpenseList from "@/components/ExpenseList";
 import EverydayLifeInput from "@/components/EverydayLifeInput";
 import ConfirmBanner from "@/components/ConfirmBanner";
 import InstallmentForm from "@/components/InstallmentForm";
+import CategoryDrawer from "@/components/CategoryDrawer";
 
 export default function MonthPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params.id as string;
 
   const [monthData, setMonthData] = useState<MonthData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Auto-open drawer if ?categorize=1
+  useEffect(() => {
+    if (searchParams.get("categorize") === "1" && monthData) {
+      setDrawerOpen(true);
+    }
+  }, [searchParams, monthData]);
 
   const fetchMonth = useCallback(async () => {
     const res = await fetch(`/api/months/${id}`);
@@ -64,8 +74,16 @@ export default function MonthPage() {
 
       {/* Main content */}
       <main className="lg:ml-80 flex-1 px-4 py-5 sm:p-6 lg:p-8 max-w-[900px]">
-        {/* Month navigation */}
-        <MonthNav year={monthData.year} month={monthData.month} />
+        {/* Month navigation + category button */}
+        <div className="flex items-center justify-between">
+          <MonthNav year={monthData.year} month={monthData.month} />
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="text-xs font-medium text-zinc-500 hover:text-blue-400 border border-zinc-800 hover:border-blue-500/30 rounded-lg px-3 py-1.5 transition-colors"
+          >
+            🏷️ Catégoriser
+          </button>
+        </div>
 
         {/* Mobile recap */}
         <div className="lg:hidden mb-6 bg-zinc-900/70 border border-zinc-800 rounded-xl p-5">
@@ -169,6 +187,17 @@ export default function MonthPage() {
 
         <div className="h-16" />
       </main>
+
+      {/* Category drawer */}
+      <CategoryDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        expenses={monthData.expenses}
+        onSaved={() => {
+          fetchMonth();
+          setDrawerOpen(false);
+        }}
+      />
     </div>
   );
 }

@@ -165,6 +165,7 @@ export async function POST(req: NextRequest) {
       success: true,
       month: serializeMonth(month),
       summary: {
+        monthId: month.id,
         year: parsed.year,
         month: parsed.month,
         salary: parsed.salary,

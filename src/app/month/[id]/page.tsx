@@ -114,7 +114,6 @@ export default function MonthPage() {
             month={monthData.month}
             title="Non prédit"
             icon="⚠️"
-            showCategory
             onUpdate={fetchMonth}
           />
         )}

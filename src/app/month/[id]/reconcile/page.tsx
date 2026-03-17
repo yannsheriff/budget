@@ -597,11 +597,14 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
   expenses: ExpenseData[];
 }) {
   const [linkOpen, setLinkOpen] = useState(false);
+  const [formConfirmed, setFormConfirmed] = useState(false);
   const [saveBankLabel, setSaveBankLabel] = useState(true);
   const [newLabel, setNewLabel] = useState(match.bankLine.label);
   const [newAmount, setNewAmount] = useState(Math.abs(match.bankLine.amount));
   const [newCategory, setNewCategory] = useState(match.bankLine.category || "");
   const linkPanelRef = useRef<HTMLDivElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLInputElement>(null);
 
   // Close link panel on click outside
   useEffect(() => {
@@ -620,7 +623,7 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
   const isIgnored = status === "IGNORED";
   const isPunctual = status === "ADDED_PUNCTUAL";
   const isRecurring = status === "ADDED_RECURRING";
-  const showForm = isPunctual || isRecurring;
+  const showForm = isRecurring && !formConfirmed;
 
   function handleLink(expense: ExpenseData) {
     onDecision({
@@ -634,7 +637,7 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
 
   return (
     <div>
-      <div className={`flex items-center px-4 py-2.5 gap-3 ${isIgnored ? "opacity-50" : ""} ${isLinked ? "border-l-2 border-emerald-400" : ""}`}>
+      <div className={`flex items-center px-4 py-2.5 gap-3 ${isIgnored || isPunctual ? "opacity-50" : ""} ${isLinked ? "border-l-2 border-emerald-400" : ""}`}>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-medium truncate">{match.bankLine.label}</div>
           <div className="text-xs text-zinc-600">{match.bankLine.date} &middot; {match.bankLine.category}</div>
@@ -645,6 +648,11 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
         {isLinked && decision && (
           <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded whitespace-nowrap">
             ✓ {decision.matchedExpenseLabel}
+          </span>
+        )}
+        {isPunctual && (
+          <span className="text-xs bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded whitespace-nowrap">
+            ● Ponctuel
           </span>
         )}
         <div className="flex gap-1 flex-shrink-0">
@@ -676,11 +684,14 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
             Ponctuel
           </button>
           <button
-            onClick={() => onDecision({
-              status: "ADDED_RECURRING",
-              newExpense: { label: newLabel, amount: newAmount, category: newCategory || undefined, type: "RECURRING" },
-              bankLabelToSave: saveBankLabel ? match.bankLine.label : undefined,
-            })}
+            onClick={() => {
+              setFormConfirmed(false);
+              onDecision({
+                status: "ADDED_RECURRING",
+                newExpense: { label: newLabel, amount: newAmount, category: newCategory || undefined, type: "RECURRING" },
+                bankLabelToSave: saveBankLabel ? match.bankLine.label : undefined,
+              });
+            }}
             className={`text-xs px-2 py-1 rounded border transition-colors ${
               isRecurring ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30" : "bg-zinc-900 text-zinc-400 border-zinc-700 hover:bg-zinc-800"
             }`}
@@ -725,6 +736,24 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
         </div>
       )}
 
+      {/* Compact confirmed view for recurring */}
+      {isRecurring && formConfirmed && (
+        <div className="flex items-center px-4 py-2 pl-8 gap-2">
+          <span className="text-xs px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400">
+            ★ Récurrent
+          </span>
+          <span className="text-xs text-zinc-300">{newLabel}</span>
+          <span className="text-xs text-zinc-500">{formatEur(newAmount)}</span>
+          {newCategory && <span className="text-xs text-zinc-600">{newCategory}</span>}
+          <button
+            onClick={() => setFormConfirmed(false)}
+            className="text-xs text-zinc-600 hover:text-zinc-400 ml-auto"
+          >
+            Modifier
+          </button>
+        </div>
+      )}
+
       {/* Inline form for punctual/recurring */}
       {showForm && (
         <div className="px-4 pb-3 pl-8 bg-zinc-900/50">
@@ -739,10 +768,13 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
                   newExpense: { label: e.target.value, amount: newAmount, category: newCategory || undefined, type: isRecurring ? "RECURRING" : "DIVERSE" },
                 });
               }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); amountRef.current?.focus(); } }}
               className="flex-1 min-w-[150px] bg-zinc-950 border border-zinc-700 rounded-md px-2.5 py-1.5 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
               placeholder="Label"
+              autoFocus
             />
             <input
+              ref={amountRef}
               type="number"
               value={newAmount}
               onChange={(e) => {
@@ -753,10 +785,12 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
                   newExpense: { label: newLabel, amount: val, category: newCategory || undefined, type: isRecurring ? "RECURRING" : "DIVERSE" },
                 });
               }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); categoryRef.current?.focus(); } }}
               className="w-20 bg-zinc-950 border border-zinc-700 rounded-md px-2.5 py-1.5 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
               step="0.01"
             />
             <input
+              ref={categoryRef}
               type="text"
               value={newCategory}
               onChange={(e) => {
@@ -765,6 +799,17 @@ function UnmatchedItem({ match, decision, onDecision, expenses }: {
                   ...decision!,
                   newExpense: { label: newLabel, amount: newAmount, category: e.target.value || undefined, type: isRecurring ? "RECURRING" : "DIVERSE" },
                 });
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  onDecision({
+                    ...decision!,
+                    newExpense: { label: newLabel, amount: newAmount, category: newCategory || undefined, type: isRecurring ? "RECURRING" : "DIVERSE" },
+                    bankLabelToSave: isRecurring && saveBankLabel ? match.bankLine.label : undefined,
+                  });
+                  setFormConfirmed(true);
+                }
               }}
               className="w-28 bg-zinc-950 border border-zinc-700 rounded-md px-2.5 py-1.5 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
               placeholder="Catégorie"

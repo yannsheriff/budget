@@ -32,6 +32,7 @@ export type ExpenseData = {
   bankLabel: string | null;
   isConfirmed: boolean;
   isRemainder: boolean;
+  isFromReconciliation: boolean;
   installmentId: string | null;
   createdAt: string;
 };
@@ -53,6 +54,7 @@ export type MonthSummary = {
   totalEveryday: number;
   totalDiverse: number;
   totalSavings: number;
+  totalUnpredicted: number;
   reste: number;
   remainderSavings: number;
   status: "green" | "orange" | "red";

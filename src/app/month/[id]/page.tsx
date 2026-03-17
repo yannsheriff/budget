@@ -103,6 +103,22 @@ export default function MonthPage() {
           />
         </div>
 
+        {/* Unpredicted expenses from reconciliation */}
+        {monthData.expenses.some(e => e.isFromReconciliation) && (
+          <ExpenseList
+            expenses={monthData.expenses}
+            type="DIVERSE"
+            filterReconciliation="only"
+            monthId={monthData.id}
+            year={monthData.year}
+            month={monthData.month}
+            title="Non prédit"
+            icon="⚠️"
+            showCategory
+            onUpdate={fetchMonth}
+          />
+        )}
+
         {/* Confirm banner */}
         <ConfirmBanner
           monthId={monthData.id}
@@ -129,6 +145,7 @@ export default function MonthPage() {
         <ExpenseList
           expenses={monthData.expenses}
           type="RECURRING"
+          filterReconciliation="exclude"
           monthId={monthData.id}
           year={monthData.year}
           month={monthData.month}
@@ -153,6 +170,7 @@ export default function MonthPage() {
         <ExpenseList
           expenses={monthData.expenses}
           type="DIVERSE"
+          filterReconciliation="exclude"
           monthId={monthData.id}
           year={monthData.year}
           month={monthData.month}

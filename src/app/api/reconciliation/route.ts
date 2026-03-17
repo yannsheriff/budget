@@ -98,13 +98,29 @@ export async function POST(req: NextRequest) {
               frequency: "MONTHLY",
               category: item.newExpense.category ?? null,
               isConfirmed: true,
+              isFromReconciliation: true,
             },
           });
         }
 
-        // If ADDED_RECURRING: create a new RECURRING expense in the NEXT month
+        // If ADDED_RECURRING: create in current month (flagged) + next month (normal recurring)
         if (item.status === "ADDED_RECURRING" && item.newExpense) {
-          // Calculate next month
+          // Create in current month as "non prédit"
+          await tx.expense.create({
+            data: {
+              monthId,
+              type: "RECURRING",
+              label: item.newExpense.label,
+              amount: item.newExpense.amount,
+              frequency: "MONTHLY",
+              category: item.newExpense.category ?? null,
+              isConfirmed: true,
+              isFromReconciliation: true,
+              bankLabel: item.bankLabelToSave ?? null,
+            },
+          });
+
+          // Create in next month as normal recurring
           let nextMonth = month.month + 1;
           let nextYear = month.year;
           if (nextMonth > 12) {
@@ -112,7 +128,6 @@ export async function POST(req: NextRequest) {
             nextYear++;
           }
 
-          // Find or create the next month
           const nextMonthRecord = await tx.month.upsert({
             where: { year_month: { year: nextYear, month: nextMonth } },
             update: {},
@@ -135,6 +150,7 @@ export async function POST(req: NextRequest) {
               frequency: "MONTHLY",
               category: item.newExpense.category ?? null,
               isConfirmed: false,
+              bankLabel: item.bankLabelToSave ?? null,
             },
           });
         }

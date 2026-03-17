@@ -18,6 +18,7 @@ type Props = {
   showConfirm?: boolean;
   showCategory?: boolean;
   showFrequency?: boolean;
+  filterReconciliation?: "only" | "exclude";
   onUpdate: () => void;
 };
 
@@ -37,6 +38,7 @@ export default function ExpenseList({
   showConfirm = false,
   showCategory = false,
   showFrequency = false,
+  filterReconciliation,
   onUpdate,
 }: Props) {
   const { toast } = useToast();
@@ -47,7 +49,12 @@ export default function ExpenseList({
   const [newCategory, setNewCategory] = useState("");
   const [categorySuggestions, setCategorySuggestions] = useState<string[]>([]);
 
-  const filtered = expenses.filter((e) => e.type === type);
+  let filtered = expenses.filter((e) => e.type === type);
+  if (filterReconciliation === "only") {
+    filtered = expenses.filter((e) => e.isFromReconciliation);
+  } else if (filterReconciliation === "exclude") {
+    filtered = filtered.filter((e) => !e.isFromReconciliation);
+  }
   const weeks = getWeeksInMonth(year, month);
 
   const total = filtered.reduce((sum, e) => sum + getEffectiveAmount(e, weeks), 0);

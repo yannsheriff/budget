@@ -64,9 +64,10 @@ model Expense {
   amount        Decimal          @db.Decimal(10, 2)
   frequency     ExpenseFrequency @default(MONTHLY)
   category      String?
-  bankLabel     String?
-  isConfirmed   Boolean          @default(false)
-  isRemainder   Boolean          @default(false)
+  bankLabel            String?
+  isConfirmed          Boolean          @default(false)
+  isRemainder          Boolean          @default(false)
+  isFromReconciliation Boolean          @default(false)
   installmentId String?
   createdAt     DateTime         @default(now())
 

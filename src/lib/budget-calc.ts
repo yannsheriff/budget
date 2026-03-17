@@ -28,8 +28,15 @@ export function calculateMonthSummary(monthData: MonthData): MonthSummary {
   const totalIncomes = incomes.reduce((sum, i) => sum + i.amount, 0);
   const budgetReel = salary + totalIncomes - overdraft;
 
+  const totalUnpredicted = expenses
+    .filter((e) => e.isFromReconciliation)
+    .reduce(
+      (sum, e) => sum + effectiveAmount(e.amount, e.frequency, year, month),
+      0
+    );
+
   const totalRecurring = expenses
-    .filter((e) => e.type === "RECURRING")
+    .filter((e) => e.type === "RECURRING" && !e.isFromReconciliation)
     .reduce(
       (sum, e) => sum + effectiveAmount(e.amount, e.frequency, year, month),
       0
@@ -39,14 +46,14 @@ export function calculateMonthSummary(monthData: MonthData): MonthSummary {
   const totalEveryday = weeklyEverydayBudget * weeks;
 
   const totalDiverse = expenses
-    .filter((e) => e.type === "DIVERSE")
+    .filter((e) => e.type === "DIVERSE" && !e.isFromReconciliation)
     .reduce((sum, e) => sum + e.amount, 0);
 
   const totalSavings = expenses
     .filter((e) => e.type === "SAVINGS" && !e.isRemainder)
     .reduce((sum, e) => sum + e.amount, 0);
 
-  const reste = budgetReel - totalRecurring - totalEveryday - totalDiverse - totalSavings;
+  const reste = budgetReel - totalRecurring - totalEveryday - totalDiverse - totalSavings - totalUnpredicted;
 
   const remainderSavings = Math.max(0, reste - SECURITY_BUFFER);
 
@@ -66,6 +73,7 @@ export function calculateMonthSummary(monthData: MonthData): MonthSummary {
     totalEveryday,
     totalDiverse,
     totalSavings,
+    totalUnpredicted,
     reste,
     remainderSavings,
     status,

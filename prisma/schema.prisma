@@ -21,8 +21,9 @@ model Month {
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
-  expenses Expense[]
-  incomes  Income[]
+  expenses       Expense[]
+  incomes        Income[]
+  reconciliation Reconciliation?
 
   @@unique([year, month])
   @@map("months")
@@ -63,13 +64,15 @@ model Expense {
   amount        Decimal          @db.Decimal(10, 2)
   frequency     ExpenseFrequency @default(MONTHLY)
   category      String?
+  bankLabel     String?
   isConfirmed   Boolean          @default(false)
   isRemainder   Boolean          @default(false)
   installmentId String?
   createdAt     DateTime         @default(now())
 
-  month       Month        @relation(fields: [monthId], references: [id], onDelete: Cascade)
-  installment Installment? @relation(fields: [installmentId], references: [id], onDelete: SetNull)
+  month              Month                @relation(fields: [monthId], references: [id], onDelete: Cascade)
+  installment        Installment?         @relation(fields: [installmentId], references: [id], onDelete: SetNull)
+  reconciliationItems ReconciliationItem[]
 
   @@map("expenses")
 }
@@ -88,4 +91,44 @@ model Installment {
   expenses Expense[]
 
   @@map("installments")
+}
+
+// ─── RAPPROCHEMENT BANCAIRE ────────────────────────
+
+enum ReconciliationStatus {
+  MATCHED
+  IGNORED
+  ADDED_PUNCTUAL
+  ADDED_RECURRING
+  LINKED
+}
+
+model Reconciliation {
+  id               String               @id @default(cuid())
+  monthId          String               @unique
+  importedAt       DateTime             @default(now())
+  bankBalance      Decimal              @db.Decimal(10, 2)
+  predictedBalance Decimal              @db.Decimal(10, 2)
+  gap              Decimal              @db.Decimal(10, 2)
+  items            ReconciliationItem[]
+
+  month Month @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@map("reconciliations")
+}
+
+model ReconciliationItem {
+  id               String               @id @default(cuid())
+  reconciliationId String
+  bankLabel        String
+  bankAmount       Decimal              @db.Decimal(10, 2)
+  bankDate         DateTime?
+  bankCategory     String?
+  status           ReconciliationStatus
+  matchedExpenseId String?
+
+  matchedExpense Expense?       @relation(fields: [matchedExpenseId], references: [id], onDelete: SetNull)
+  reconciliation Reconciliation @relation(fields: [reconciliationId], references: [id], onDelete: Cascade)
+
+  @@map("reconciliation_items")
 }

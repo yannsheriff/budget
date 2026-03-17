@@ -51,6 +51,7 @@ src/
 │   ├── MonthNav.tsx            # Navigation mois précédent/suivant
 │   ├── MonthSummary.tsx        # Récapitulatif budget (sidebar desktop, inline mobile)
 │   ├── Providers.tsx           # Client wrapper pour ToastProvider
+│   ├── SearchSelect.tsx        # Input recherche + liste navigable clavier (flèches + Enter), générique via renderItem
 │   └── Toast.tsx               # Système de notifications toast (Context)
 ├── lib/
 │   ├── api.ts                  # Helpers fetch client (request, post, patch, del)

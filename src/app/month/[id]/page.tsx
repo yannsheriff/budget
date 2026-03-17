@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { MonthData } from "@/types";
 import { calculateMonthSummary } from "@/lib/budget-calc";
 import MonthSummary from "@/components/MonthSummary";
@@ -17,6 +17,7 @@ import CategoryDrawer from "@/components/CategoryDrawer";
 export default function MonthPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = params.id as string;
 
   const [monthData, setMonthData] = useState<MonthData | null>(null);
@@ -77,12 +78,20 @@ export default function MonthPage() {
         {/* Month navigation + category button */}
         <div className="flex items-center justify-between">
           <MonthNav year={monthData.year} month={monthData.month} />
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="text-xs font-medium text-zinc-500 hover:text-blue-400 border border-zinc-800 hover:border-blue-500/30 rounded-lg px-3 py-1.5 transition-colors"
-          >
-            🏷️ Catégoriser
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push(`/month/${monthData.id}/reconcile`)}
+              className="text-xs font-medium text-zinc-500 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 rounded-lg px-3 py-1.5 transition-colors"
+            >
+              🏦 Réconcilier
+            </button>
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="text-xs font-medium text-zinc-500 hover:text-blue-400 border border-zinc-800 hover:border-blue-500/30 rounded-lg px-3 py-1.5 transition-colors"
+            >
+              🏷️ Catégoriser
+            </button>
+          </div>
         </div>
 
         {/* Mobile recap */}

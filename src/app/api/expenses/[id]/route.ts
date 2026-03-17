@@ -10,7 +10,7 @@ export async function PATCH(
   const { id } = await params;
   const body = await request.json();
 
-  const allowedFields = ["label", "amount", "frequency", "category", "isConfirmed", "isRemainder"];
+  const allowedFields = ["label", "amount", "frequency", "category", "bankLabel", "isConfirmed", "isRemainder"];
   const data: Record<string, unknown> = {};
 
   for (const field of allowedFields) {

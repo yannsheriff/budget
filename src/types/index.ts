@@ -29,6 +29,7 @@ export type ExpenseData = {
   amount: number;
   frequency: ExpenseFrequency;
   category: string | null;
+  bankLabel: string | null;
   isConfirmed: boolean;
   isRemainder: boolean;
   installmentId: string | null;

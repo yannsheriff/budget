@@ -42,6 +42,7 @@ export default function ExpenseList({
   onUpdate,
 }: Props) {
   const { toast } = useToast();
+  const [open, setOpen] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [newAmount, setNewAmount] = useState("");
@@ -186,113 +187,133 @@ export default function ExpenseList({
 
   return (
     <div className="mb-6">
-      <div className="flex items-center justify-between mb-3">
+      {/* Accordion header */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between mb-3 group cursor-pointer"
+      >
         <h3 className="text-[15px] font-bold flex items-center gap-2">
           <span className="text-lg">{icon}</span> {title}
+          <span className="text-xs font-normal text-zinc-500">
+            · {filtered.length} item{filtered.length > 1 ? "s" : ""}
+          </span>
+          <span className={`text-xs text-zinc-600 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
         </h3>
         <span className="text-sm text-zinc-500 font-semibold tabular-nums">
           {formatEur(total)}
         </span>
-      </div>
+      </button>
 
-      <div className="bg-zinc-800/40 border border-zinc-700/50 rounded-xl overflow-hidden">
-        {/* Grouped view */}
-        {grouped
-          ? Object.entries(grouped).map(([category, items]) => {
-              const catTotal = items.reduce(
-                (sum, e) => sum + getEffectiveAmount(e, weeks),
-                0
-              );
-              return (
-                <div key={category}>
-                  <div className="flex items-center justify-between px-4 py-2 bg-zinc-900/50 border-b border-zinc-700/50">
-                    <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-                      {category}
-                    </span>
-                    <span className="text-xs text-zinc-500 font-semibold tabular-nums">
-                      {formatEur(catTotal)}
-                    </span>
+      {open && (
+        <div className="bg-zinc-800/40 border border-zinc-700/50 rounded-xl overflow-hidden">
+          {/* Grouped view */}
+          {grouped
+            ? Object.entries(grouped).map(([category, items]) => {
+                const catTotal = items.reduce(
+                  (sum, e) => sum + getEffectiveAmount(e, weeks),
+                  0
+                );
+                return (
+                  <div key={category}>
+                    <div className="flex items-center justify-between px-4 py-2 bg-zinc-900/50 border-b border-zinc-700/50">
+                      <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                        {category}
+                      </span>
+                      <span className="text-xs text-zinc-500 font-semibold tabular-nums">
+                        {formatEur(catTotal)}
+                      </span>
+                    </div>
+                    {items.map(renderExpenseRow)}
                   </div>
-                  {items.map(renderExpenseRow)}
-                </div>
-              );
-            })
-          : filtered.map(renderExpenseRow)}
+                );
+              })
+            : filtered.map(renderExpenseRow)}
 
-        {/* Add form */}
-        {isAdding ? (
-          <div className="px-4 py-3 border-t border-zinc-700/50 space-y-2">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Libellé"
-                value={newLabel}
-                onChange={(e) => setNewLabel(e.target.value)}
-                className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500"
-                autoFocus
-              />
-              <input
-                type="number"
-                placeholder="Montant"
-                value={newAmount}
-                onChange={(e) => setNewAmount(e.target.value)}
-                className="w-28 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500 text-right"
-              />
-              <span className="text-sm text-zinc-500 self-center">€</span>
-            </div>
-            <div className="flex gap-2 items-center flex-wrap">
-              {showFrequency && (
-                <select
-                  value={newFrequency}
-                  onChange={(e) =>
-                    setNewFrequency(e.target.value as ExpenseFrequency)
-                  }
-                  className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none"
+          {/* Add form */}
+          {isAdding ? (
+            <div className="px-4 py-3 border-t border-zinc-700/50 space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Libellé"
+                  value={newLabel}
+                  onChange={(e) => setNewLabel(e.target.value)}
+                  className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500"
+                  autoFocus
+                />
+                <input
+                  type="number"
+                  placeholder="Montant"
+                  value={newAmount}
+                  onChange={(e) => setNewAmount(e.target.value)}
+                  className="w-28 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500 text-right"
+                />
+                <span className="text-sm text-zinc-500 self-center">€</span>
+              </div>
+              <div className="flex gap-2 items-center flex-wrap">
+                {showFrequency && (
+                  <select
+                    value={newFrequency}
+                    onChange={(e) =>
+                      setNewFrequency(e.target.value as ExpenseFrequency)
+                    }
+                    className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none"
+                  >
+                    <option value="MONTHLY">Mensuel</option>
+                    <option value="WEEKLY">Hebdomadaire</option>
+                  </select>
+                )}
+                {showCategory && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Catégorie"
+                      list={`category-suggestions-${type}`}
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="flex-1 min-w-[120px] bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500"
+                    />
+                    <datalist id={`category-suggestions-${type}`}>
+                      {categorySuggestions.map((cat) => (
+                        <option key={cat} value={cat} />
+                      ))}
+                    </datalist>
+                  </>
+                )}
+                <button
+                  onClick={handleAdd}
+                  className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                 >
-                  <option value="MONTHLY">Mensuel</option>
-                  <option value="WEEKLY">Hebdomadaire</option>
-                </select>
-              )}
-              {showCategory && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Catégorie"
-                    list={`category-suggestions-${type}`}
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    className="flex-1 min-w-[120px] bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500"
-                  />
-                  <datalist id={`category-suggestions-${type}`}>
-                    {categorySuggestions.map((cat) => (
-                      <option key={cat} value={cat} />
-                    ))}
-                  </datalist>
-                </>
-              )}
-              <button
-                onClick={handleAdd}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-              >
-                Ajouter
-              </button>
-              <button
-                onClick={() => setIsAdding(false)}
-                className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors"
-              >
-                Annuler
-              </button>
+                  Ajouter
+                </button>
+                <button
+                  onClick={() => setIsAdding(false)}
+                  className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors"
+                >
+                  Annuler
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => setIsAdding(true)}
-            className="w-full py-2.5 text-sm text-zinc-500 hover:text-blue-400 hover:bg-zinc-700/20 transition-colors"
-          >
-            + Ajouter
-          </button>
-        )}
-      </div>
+          ) : (
+            <button
+              onClick={() => setIsAdding(true)}
+              className="w-full py-2.5 text-sm text-zinc-500 hover:text-blue-400 hover:bg-zinc-700/20 transition-colors"
+            >
+              + Ajouter
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Add button when closed */}
+      {!open && (
+        <button
+          onClick={() => { setOpen(true); setIsAdding(true); }}
+          className="w-full bg-zinc-800/40 border border-zinc-700/50 rounded-xl py-2.5 text-sm text-zinc-500 hover:text-blue-400 hover:bg-zinc-700/20 transition-colors"
+        >
+          + Ajouter
+        </button>
+      )}
     </div>
   );
 }

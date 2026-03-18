@@ -186,26 +186,28 @@ export default function ExpenseList({
   }
 
   return (
-    <div className="mb-6">
+    <div className="mb-4 bg-zinc-800/40 border border-zinc-700/50 rounded-xl overflow-hidden">
       {/* Accordion header */}
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between mb-3 group cursor-pointer"
+        className="w-full flex items-center justify-between px-4 py-3.5 cursor-pointer hover:bg-zinc-700/20 transition-colors"
       >
         <h3 className="text-[15px] font-bold flex items-center gap-2">
           <span className="text-lg">{icon}</span> {title}
           <span className="text-xs font-normal text-zinc-500">
             · {filtered.length} item{filtered.length > 1 ? "s" : ""}
           </span>
-          <span className={`text-xs text-zinc-600 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
         </h3>
-        <span className="text-sm text-zinc-500 font-semibold tabular-nums">
-          {formatEur(total)}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-zinc-500 font-semibold tabular-nums">
+            {formatEur(total)}
+          </span>
+          <span className={`text-xs text-zinc-600 transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
+        </div>
       </button>
 
       {open && (
-        <div className="bg-zinc-800/40 border border-zinc-700/50 rounded-xl overflow-hidden">
+        <>
           {/* Grouped view */}
           {grouped
             ? Object.entries(grouped).map(([category, items]) => {
@@ -302,14 +304,14 @@ export default function ExpenseList({
               + Ajouter
             </button>
           )}
-        </div>
+        </>
       )}
 
       {/* Add button when closed */}
       {!open && (
         <button
           onClick={() => { setOpen(true); setIsAdding(true); }}
-          className="w-full bg-zinc-800/40 border border-zinc-700/50 rounded-xl py-2.5 text-sm text-zinc-500 hover:text-blue-400 hover:bg-zinc-700/20 transition-colors"
+          className="w-full py-2.5 text-sm text-zinc-500 hover:text-blue-400 hover:bg-zinc-700/20 transition-colors border-t border-zinc-700/50"
         >
           + Ajouter
         </button>

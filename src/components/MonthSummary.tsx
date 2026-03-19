@@ -66,6 +66,9 @@ export default function MonthSummary({ summary, salary, overdraft }: Props) {
           <Row label="Every day life" value={`− ${formatEur(summary.totalEveryday)}`} valueClass="text-red-400" />
           <Row label="Divers" value={`− ${formatEur(summary.totalDiverse)}`} valueClass="text-red-400" />
           <Row label="Épargne" value={`− ${formatEur(summary.totalSavings)}`} valueClass="text-red-400" />
+          {summary.totalUnpredicted > 0 && (
+            <Row label="Non prédit" value={`− ${formatEur(summary.totalUnpredicted)}`} valueClass="text-amber-400" />
+          )}
         </div>
         <div className="border-t-2 border-zinc-700/50 mt-1" />
         <div className="flex justify-between items-center py-3 text-base font-bold">

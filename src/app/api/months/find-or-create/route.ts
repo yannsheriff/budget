@@ -27,6 +27,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(serializeMonth(existing));
   }
 
+  // Block creation of future months before the 24th
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+  const currentDay = today.getDate();
+  const isFutureMonth = year > currentYear || (year === currentYear && monthNum > currentMonth);
+
+  if (isFutureMonth && currentDay < 24) {
+    return NextResponse.json(
+      { error: "Création du mois suivant disponible à partir du 24" },
+      { status: 403 }
+    );
+  }
+
   // Find previous month
   const previousMonth = await prisma.month.findFirst({
     where: {

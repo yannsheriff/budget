@@ -6,9 +6,8 @@ import { MonthData } from "@/types";
 import { calculateMonthSummary } from "@/lib/budget-calc";
 import MonthSummary from "@/components/MonthSummary";
 import MonthNav from "@/components/MonthNav";
-import MonthFields from "@/components/MonthFields";
-import IncomeList from "@/components/IncomeList";
 import ExpenseList from "@/components/ExpenseList";
+import IncomeDrawer from "@/components/IncomeDrawer";
 import EverydayLifeInput from "@/components/EverydayLifeInput";
 import ConfirmBanner from "@/components/ConfirmBanner";
 import InstallmentForm from "@/components/InstallmentForm";
@@ -23,6 +22,7 @@ export default function MonthPage() {
   const [monthData, setMonthData] = useState<MonthData | null>(null);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [incomeDrawerOpen, setIncomeDrawerOpen] = useState(false);
 
   // Auto-open drawer if ?categorize=1
   useEffect(() => {
@@ -75,19 +75,20 @@ export default function MonthPage() {
 
       {/* Main content */}
       <main className="lg:ml-80 flex-1 px-4 py-5 sm:p-6 lg:p-8 max-w-[900px]">
-        {/* Month navigation + category button */}
-        <div className="flex items-center justify-between">
+        {/* Month navigation + action buttons */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <MonthNav year={monthData.year} month={monthData.month} />
-          <div className="flex gap-2">
+          {/* Desktop: inline — Mobile: full-width row below */}
+          <div className="flex gap-2 w-full sm:w-auto mb-4 sm:mb-0">
             <button
-              onClick={() => router.push(`/month/${monthData.id}/reconcile`)}
-              className="text-xs font-medium text-zinc-500 hover:text-emerald-400 border border-zinc-800 hover:border-emerald-500/30 rounded-lg px-3 py-1.5 transition-colors"
+              onClick={() => setIncomeDrawerOpen(true)}
+              className="flex-1 sm:flex-none text-xs font-medium text-zinc-500 hover:text-amber-400 border border-zinc-800 hover:border-amber-500/30 rounded-lg px-3 py-2.5 sm:py-1.5 transition-colors"
             >
-              🏦 Réconcilier
+              💰 Revenus
             </button>
             <button
               onClick={() => setDrawerOpen(true)}
-              className="text-xs font-medium text-zinc-500 hover:text-blue-400 border border-zinc-800 hover:border-blue-500/30 rounded-lg px-3 py-1.5 transition-colors"
+              className="flex-1 sm:flex-none text-xs font-medium text-zinc-500 hover:text-blue-400 border border-zinc-800 hover:border-blue-500/30 rounded-lg px-3 py-2.5 sm:py-1.5 transition-colors sm:hidden"
             >
               🏷️ Catégoriser
             </button>
@@ -122,21 +123,6 @@ export default function MonthPage() {
         <ConfirmBanner
           monthId={monthData.id}
           expenses={monthData.expenses}
-          onUpdate={fetchMonth}
-        />
-
-        {/* Salary + Overdraft */}
-        <MonthFields
-          monthId={monthData.id}
-          salary={monthData.salary}
-          overdraft={monthData.overdraft}
-          onUpdate={fetchMonth}
-        />
-
-        {/* Other incomes */}
-        <IncomeList
-          incomes={monthData.incomes}
-          monthId={monthData.id}
           onUpdate={fetchMonth}
         />
 
@@ -213,6 +199,17 @@ export default function MonthPage() {
 
         <div className="h-16" />
       </main>
+
+      {/* Income drawer */}
+      <IncomeDrawer
+        open={incomeDrawerOpen}
+        onClose={() => setIncomeDrawerOpen(false)}
+        monthId={monthData.id}
+        salary={monthData.salary}
+        overdraft={monthData.overdraft}
+        incomes={monthData.incomes}
+        onUpdate={fetchMonth}
+      />
 
       {/* Category drawer */}
       <CategoryDrawer

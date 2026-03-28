@@ -47,7 +47,7 @@ export default function MonthPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-zinc-500">Chargement...</div>
+        <div className="text-gray-400 dark:text-zinc-500">Chargement...</div>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function MonthPage() {
   if (!monthData) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-zinc-500">Mois introuvable</div>
+        <div className="text-gray-400 dark:text-zinc-500">Mois introuvable</div>
       </div>
     );
   }
@@ -65,7 +65,7 @@ export default function MonthPage() {
   return (
     <div className="flex min-h-[calc(100vh-56px)]">
       {/* Sidebar — Récapitulatif fixe */}
-      <aside className="fixed top-14 left-0 bottom-0 w-80 bg-zinc-900/70 border-r border-zinc-800 p-6 overflow-y-auto hidden lg:block">
+      <aside className="fixed top-14 left-0 bottom-0 w-80 bg-gray-50/70 dark:bg-zinc-900/70 border-r border-gray-200 dark:border-zinc-800 p-6 overflow-y-auto hidden lg:block">
         <MonthSummary
           summary={summary}
           salary={monthData.salary}
@@ -82,21 +82,27 @@ export default function MonthPage() {
           <div className="flex gap-2 w-full sm:w-auto mb-4 sm:mb-0">
             <button
               onClick={() => setIncomeDrawerOpen(true)}
-              className="flex-1 sm:flex-none text-xs font-medium text-zinc-500 hover:text-amber-400 border border-zinc-800 hover:border-amber-500/30 rounded-lg px-3 py-2.5 sm:py-1.5 transition-colors"
+              className="flex-1 sm:flex-none text-xs font-medium text-gray-500 dark:text-zinc-500 hover:text-amber-500 dark:hover:text-amber-400 border border-gray-200 dark:border-zinc-800 hover:border-amber-300 dark:hover:border-amber-500/30 rounded-lg px-3 py-2.5 sm:py-1.5 transition-colors"
             >
               💰 Revenus
             </button>
             <button
               onClick={() => setDrawerOpen(true)}
-              className="flex-1 sm:flex-none text-xs font-medium text-zinc-500 hover:text-blue-400 border border-zinc-800 hover:border-blue-500/30 rounded-lg px-3 py-2.5 sm:py-1.5 transition-colors sm:hidden"
+              className="flex-1 sm:flex-none text-xs font-medium text-gray-500 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-400 border border-gray-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-500/30 rounded-lg px-3 py-2.5 sm:py-1.5 transition-colors"
             >
               🏷️ Catégoriser
+            </button>
+            <button
+              onClick={() => router.push(`/month/${id}/reconcile`)}
+              className="hidden sm:inline-flex text-xs font-medium text-gray-500 dark:text-zinc-500 hover:text-emerald-500 dark:hover:text-emerald-400 border border-gray-200 dark:border-zinc-800 hover:border-emerald-300 dark:hover:border-emerald-500/30 rounded-lg px-3 py-1.5 transition-colors"
+            >
+              🏦 Réconciliation
             </button>
           </div>
         </div>
 
         {/* Mobile recap */}
-        <div className="lg:hidden mb-6 bg-zinc-900/70 border border-zinc-800 rounded-xl p-5">
+        <div className="lg:hidden mb-6 bg-gray-50/70 dark:bg-zinc-900/70 border border-gray-200 dark:border-zinc-800 rounded-xl p-5">
           <MonthSummary
             summary={summary}
             salary={monthData.salary}
@@ -183,11 +189,11 @@ export default function MonthPage() {
 
         {/* Remainder savings info */}
         {summary.remainderSavings > 0 && (
-          <div className="bg-emerald-500/10 border-t border-emerald-500/15 rounded-xl px-4 py-3 flex items-center justify-between -mt-3 mb-6">
-            <span className="text-sm text-emerald-400 font-medium">
+          <div className="bg-emerald-50 dark:bg-emerald-500/10 border-t border-emerald-200 dark:border-emerald-500/15 rounded-xl px-4 py-3 flex items-center justify-between -mt-3 mb-6">
+            <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
               💡 &quot;Tout le reste&quot; disponible pour l&apos;épargne
             </span>
-            <span className="text-base text-emerald-400 font-bold tabular-nums">
+            <span className="text-base text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">
               {new Intl.NumberFormat("fr-FR", {
                 style: "currency",
                 currency: "EUR",

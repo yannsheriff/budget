@@ -21,9 +21,9 @@ export type ParsedStatement = {
 /**
  * Parse a bank statement CSV buffer into a ParsedStatement.
  *
- * Expected CSV format:
- *   Date,Libellé,Montant (€),Catégorie
- *   2026-02-28,CARJUDGE.COM,-5.99,Abonnement/Streaming
+ * Expected CSV format (semicolon-separated):
+ *   Date;Libellé;Montant (€);Catégorie
+ *   2026-02-28;CARJUDGE.COM;-5,99;Abonnement/Streaming
  */
 export function parseCsvBuffer(buffer: Buffer): ParsedStatement {
   const text = buffer.toString("utf-8");
@@ -44,8 +44,11 @@ export function parseCsvBuffer(buffer: Buffer): ParsedStatement {
     const amount = parseAmount(rawAmount);
     if (isNaN(amount)) continue;
 
+    const isoDate = parseDate(date.trim());
+    if (!isoDate) continue;
+
     lines.push({
-      date: date.trim(),
+      date: isoDate,
       label: label.trim(),
       amount,
       category: category.trim(),
@@ -72,7 +75,7 @@ export function parseCsvBuffer(buffer: Buffer): ParsedStatement {
 // --- Helpers ---
 
 /**
- * Parse a single CSV line, handling quoted fields that may contain commas.
+ * Parse a single CSV line (semicolon-separated), handling quoted fields that may contain semicolons.
  */
 function parseCsvLine(line: string): string[] {
   const fields: string[] = [];
@@ -84,7 +87,6 @@ function parseCsvLine(line: string): string[] {
 
     if (inQuotes) {
       if (ch === '"') {
-        // Check for escaped quote ""
         if (i + 1 < line.length && line[i + 1] === '"') {
           current += '"';
           i++;
@@ -97,7 +99,7 @@ function parseCsvLine(line: string): string[] {
     } else {
       if (ch === '"') {
         inQuotes = true;
-      } else if (ch === ",") {
+      } else if (ch === ";") {
         fields.push(current);
         current = "";
       } else {
@@ -108,6 +110,28 @@ function parseCsvLine(line: string): string[] {
 
   fields.push(current);
   return fields;
+}
+
+/**
+ * Normalize a date to ISO YYYY-MM-DD. Accepts ISO, DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY (and 2-digit years).
+ * Returns null if the input cannot be parsed.
+ */
+function parseDate(raw: string): string | null {
+  if (!raw) return null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+
+  const m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2}|\d{4})$/);
+  if (!m) return null;
+
+  const day = m[1].padStart(2, "0");
+  const month = m[2].padStart(2, "0");
+  let year = m[3];
+  if (year.length === 2) {
+    const n = parseInt(year, 10);
+    year = (n >= 70 ? "19" : "20") + year;
+  }
+  return `${year}-${month}-${day}`;
 }
 
 /**

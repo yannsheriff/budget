@@ -1,7 +1,7 @@
 const CACHE_NAME = "budget-v1";
 
 // Static assets to pre-cache on install
-const PRECACHE_URLS = ["/", "/icon-192.png", "/icon-512.png"];
+const PRECACHE_URLS = ["/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

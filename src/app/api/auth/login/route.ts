@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
   const token = await createToken();
 
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.json({ success: true, token });
 
   response.cookies.set(AUTH_COOKIE, token, {
     httpOnly: true,

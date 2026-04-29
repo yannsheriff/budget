@@ -208,47 +208,47 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/30 dark:bg-black/50 z-40 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 bottom-0 w-full sm:w-[580px] lg:w-[640px] bg-zinc-950 border-l border-zinc-800 z-50 flex flex-col animate-slide-in">
+      <div className="fixed top-0 right-0 bottom-0 w-full sm:w-[580px] lg:w-[640px] bg-white dark:bg-zinc-950 border-l border-gray-200 dark:border-zinc-800 z-50 flex flex-col animate-slide-in">
         {/* Header */}
-        <div className="px-5 pt-5 pb-4 border-b border-zinc-800 flex-shrink-0">
+        <div className="px-5 pt-5 pb-4 border-b border-gray-200 dark:border-zinc-800 flex-shrink-0">
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-lg font-bold tracking-tight">
               Catégoriser les dépenses
             </h2>
             <button
               onClick={onClose}
-              className="text-zinc-500 hover:text-zinc-300 text-xl leading-none p-1"
+              className="text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 text-xl leading-none p-1"
             >
               ✕
             </button>
           </div>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-gray-500 dark:text-zinc-500">
             {expenses.length} dépenses · {counts["no-cat"] || 0} sans catégorie
           </p>
 
           {/* Tabs */}
-          <div className="flex gap-1 mt-4 border-b border-zinc-800 -mx-5 px-5">
+          <div className="flex gap-1 mt-4 border-b border-gray-200 dark:border-zinc-800 -mx-5 px-5">
             {tabs.map((t) => (
               <button
                 key={t.key}
                 onClick={() => { setTab(t.key); setSelected(new Set()); }}
                 className={`px-3 py-2 text-xs font-medium border-b-2 -mb-px transition-colors ${
                   tab === t.key
-                    ? "text-blue-400 border-blue-400"
-                    : "text-zinc-500 border-transparent hover:text-zinc-300"
+                    ? "text-blue-500 dark:text-blue-400 border-blue-500 dark:border-blue-400"
+                    : "text-gray-500 dark:text-zinc-500 border-transparent hover:text-gray-700 dark:hover:text-zinc-300"
                 }`}
               >
                 {t.label}
                 <span
                   className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full ${
                     tab === t.key
-                      ? "bg-blue-500/15 text-blue-400"
-                      : "bg-zinc-800 text-zinc-500"
+                      ? "bg-blue-50 dark:bg-blue-500/15 text-blue-500 dark:text-blue-400"
+                      : "bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-500"
                   }`}
                 >
                   {counts[t.key] || 0}
@@ -265,32 +265,32 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
             placeholder="Rechercher une dépense..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-zinc-900/80 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500/50 placeholder:text-zinc-600"
+            className="w-full bg-gray-50 dark:bg-zinc-900/80 border border-gray-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-400 dark:focus:border-blue-500/50 placeholder:text-gray-400 dark:placeholder:text-zinc-600"
           />
 
           {/* Selection action bar */}
           {selected.size > 0 && (
-            <div className="bg-blue-500/8 border border-blue-500/20 rounded-lg p-3 space-y-2">
+            <div className="bg-blue-50 dark:bg-blue-500/8 border border-blue-200 dark:border-blue-500/20 rounded-lg p-3 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-blue-300">
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-300">
                   {selected.size} sélectionnée{selected.size > 1 ? "s" : ""}
                 </span>
                 <button
                   onClick={() => setSelected(new Set())}
-                  className="text-[11px] text-zinc-500 hover:text-zinc-300 underline"
+                  className="text-[11px] text-gray-500 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 underline"
                 >
                   Désélectionner
                 </button>
               </div>
               <div className="flex gap-1.5 flex-wrap items-center">
-                <span className="text-[11px] text-zinc-500 mr-1">
+                <span className="text-[11px] text-gray-500 dark:text-zinc-500 mr-1">
                   Appliquer :
                 </span>
                 {existingCategories.slice(0, 10).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => bulkApply(cat)}
-                    className="text-[11px] px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 hover:text-white transition-colors"
+                    className="text-[11px] px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:text-blue-700 dark:hover:text-white transition-colors"
                   >
                     {cat}
                   </button>
@@ -310,7 +310,7 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
               onChange={selectAll}
               className="accent-blue-500 w-3.5 h-3.5 cursor-pointer"
             />
-            <span className="text-[11px] text-zinc-500">
+            <span className="text-[11px] text-gray-500 dark:text-zinc-500">
               Tout sélectionner ({filtered.length})
             </span>
           </div>
@@ -325,7 +325,7 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
               <div key={type} className="mb-4">
                 {/* Section header — only if multiple types visible */}
                 {Object.keys(grouped).length > 1 && (
-                  <div className="flex items-center justify-between py-2 px-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                  <div className="flex items-center justify-between py-2 px-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-zinc-500">
                     <span>
                       {TYPE_ICONS[type]} {TYPE_LABELS[type]}
                     </span>
@@ -333,7 +333,7 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
                   </div>
                 )}
 
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg overflow-hidden divide-y divide-zinc-800/60">
+                <div className="bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden divide-y divide-gray-100 dark:divide-zinc-800/60">
                   {items.map((expense) => {
                     const currentCat = categories[expense.id] ?? expense.category ?? "";
                     const isSelected = selected.has(expense.id);
@@ -341,8 +341,8 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
                     return (
                       <div
                         key={expense.id}
-                        className={`flex items-center gap-3 px-3 py-2.5 hover:bg-zinc-800/30 transition-colors ${
-                          isSelected ? "bg-blue-500/5" : ""
+                        className={`flex items-center gap-3 px-3 py-2.5 hover:bg-gray-100 dark:hover:bg-zinc-800/30 transition-colors ${
+                          isSelected ? "bg-blue-50/50 dark:bg-blue-500/5" : ""
                         }`}
                       >
                         <input
@@ -354,7 +354,7 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
                         <span className="flex-1 text-sm font-medium truncate">
                           {expense.label}
                         </span>
-                        <span className="text-sm tabular-nums text-zinc-400 whitespace-nowrap">
+                        <span className="text-sm tabular-nums text-gray-500 dark:text-zinc-400 whitespace-nowrap">
                           {fmt.format(expense.amount)}
                         </span>
                         <input
@@ -365,11 +365,11 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
                           onChange={(e) =>
                             setCategoryForExpense(expense.id, e.target.value)
                           }
-                          className={`w-[130px] bg-zinc-950 border rounded-md px-2 py-1 text-xs outline-none transition-colors flex-shrink-0 ${
+                          className={`w-[130px] bg-white dark:bg-zinc-950 border rounded-md px-2 py-1 text-xs outline-none transition-colors flex-shrink-0 ${
                             currentCat
-                              ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-300"
-                              : "border-zinc-700/60 text-zinc-300 placeholder:text-zinc-600"
-                          } focus:border-blue-500/50 focus:shadow-[0_0_0_2px_rgba(59,130,246,0.1)]`}
+                              ? "border-emerald-300 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
+                              : "border-gray-300 dark:border-zinc-700/60 text-gray-700 dark:text-zinc-300 placeholder:text-gray-400 dark:placeholder:text-zinc-600"
+                          } focus:border-blue-400 dark:focus:border-blue-500/50 focus:shadow-[0_0_0_2px_rgba(59,130,246,0.1)]`}
                         />
                       </div>
                     );
@@ -380,7 +380,7 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
           })}
 
           {filtered.length === 0 && (
-            <div className="text-center py-12 text-zinc-600 text-sm">
+            <div className="text-center py-12 text-gray-400 dark:text-zinc-600 text-sm">
               Aucune dépense trouvée
             </div>
           )}
@@ -397,9 +397,9 @@ export default function CategoryDrawer({ open, onClose, expenses, onSaved }: Pro
 
         {/* Save bar */}
         {changes.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-zinc-950/95 backdrop-blur-sm border-t border-zinc-800 px-5 py-3 flex items-center justify-center gap-3">
-            <span className="text-sm text-zinc-400">
-              <strong className="text-blue-400">{changes.length}</strong>{" "}
+          <div className="absolute bottom-0 left-0 right-0 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-sm border-t border-gray-200 dark:border-zinc-800 px-5 py-3 flex items-center justify-center gap-3">
+            <span className="text-sm text-gray-500 dark:text-zinc-400">
+              <strong className="text-blue-500 dark:text-blue-400">{changes.length}</strong>{" "}
               catégorie{changes.length > 1 ? "s" : ""} modifiée
               {changes.length > 1 ? "s" : ""}
             </span>

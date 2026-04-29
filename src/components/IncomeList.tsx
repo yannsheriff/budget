@@ -48,16 +48,16 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
         <h3 className="text-[15px] font-bold flex items-center gap-2">
           <span className="text-lg">📥</span> Autres revenus
         </h3>
-        <span className="text-sm text-zinc-500 font-semibold tabular-nums">
+        <span className="text-sm text-gray-500 dark:text-zinc-500 font-semibold tabular-nums">
           {formatEur(total)}
         </span>
       </div>
 
-      <div className="bg-zinc-800/40 border border-zinc-700/50 rounded-xl overflow-hidden">
+      <div className="bg-gray-50 dark:bg-zinc-800/40 border border-gray-200 dark:border-zinc-700/50 rounded-xl overflow-hidden">
         {incomes.map((income) => (
           <div
             key={income.id}
-            className="flex items-center justify-between px-4 py-3 border-b border-zinc-700/50 last:border-none hover:bg-zinc-700/20 transition-colors group"
+            className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-zinc-700/50 last:border-none hover:bg-gray-50 dark:hover:bg-zinc-700/20 transition-colors group"
           >
             <span className="text-sm font-medium">{income.label}</span>
             <div className="flex items-center gap-2">
@@ -66,7 +66,7 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
               </span>
               <button
                 onClick={() => handleDelete(income.id)}
-                className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-md flex items-center justify-center text-zinc-500 hover:bg-red-500/10 hover:text-red-400 transition-all text-sm"
+                className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-md flex items-center justify-center text-gray-400 dark:text-zinc-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-400 transition-all text-sm"
                 title="Supprimer"
               >
                 ✕
@@ -76,13 +76,13 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
         ))}
 
         {isAdding ? (
-          <div className="px-4 py-3 border-t border-zinc-700/50 flex gap-2">
+          <div className="px-4 py-3 border-t border-gray-200 dark:border-zinc-700/50 flex gap-2">
             <input
               type="text"
               placeholder="Libellé"
               value={newLabel}
               onChange={(e) => setNewLabel(e.target.value)}
-              className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500"
+              className="flex-1 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500"
               autoFocus
             />
             <input
@@ -90,7 +90,7 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
               placeholder="Montant"
               value={newAmount}
               onChange={(e) => setNewAmount(e.target.value)}
-              className="w-28 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 outline-none focus:border-blue-500 text-right"
+              className="w-28 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-right"
             />
             <button
               onClick={handleAdd}
@@ -100,7 +100,7 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
             </button>
             <button
               onClick={() => setIsAdding(false)}
-              className="text-zinc-500 hover:text-zinc-300 text-sm"
+              className="text-gray-500 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 text-sm"
             >
               ✕
             </button>
@@ -108,7 +108,7 @@ export default function IncomeList({ incomes, monthId, onUpdate }: Props) {
         ) : (
           <button
             onClick={() => setIsAdding(true)}
-            className="w-full py-2.5 text-sm text-zinc-500 hover:text-blue-400 hover:bg-zinc-700/20 transition-colors"
+            className="w-full py-2.5 text-sm text-gray-500 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-zinc-700/20 transition-colors"
           >
             + Ajouter un revenu
           </button>

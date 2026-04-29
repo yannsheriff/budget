@@ -13,7 +13,7 @@ type Props = {
 const CREATE_DAY = 24;
 
 const btnBase =
-  "w-9 h-9 bg-zinc-800/60 border border-zinc-700/50 rounded-lg flex items-center justify-center transition-colors text-base";
+  "w-9 h-9 bg-gray-100 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/50 rounded-lg flex items-center justify-center transition-colors text-base";
 
 export default function NextMonthButton({ year, month }: Props) {
   const router = useRouter();
@@ -50,7 +50,7 @@ export default function NextMonthButton({ year, month }: Props) {
 
   if (nextExists) {
     return (
-      <button onClick={goNext} className={`${btnBase} text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/40`}>
+      <button onClick={goNext} className={`${btnBase} text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:bg-gray-200 dark:hover:bg-zinc-700/40`}>
         →
       </button>
     );
@@ -60,7 +60,7 @@ export default function NextMonthButton({ year, month }: Props) {
     return (
       <button
         onClick={goNext}
-        className={`${btnBase} text-emerald-400 hover:text-emerald-300 hover:bg-zinc-700/40`}
+        className={`${btnBase} text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 hover:bg-gray-200 dark:hover:bg-zinc-700/40`}
         title={`Créer ${getMonthLabel(next.year, next.month)}`}
       >
         +
@@ -71,7 +71,7 @@ export default function NextMonthButton({ year, month }: Props) {
   return (
     <button
       onClick={() => toast("Disponible à partir du 24", "info")}
-      className={`${btnBase} text-zinc-600 cursor-not-allowed`}
+      className={`${btnBase} text-gray-300 dark:text-zinc-600 cursor-not-allowed`}
       title={`Disponible à partir du 24`}
     >
       +

@@ -14,7 +14,7 @@
  *     item.label.toLowerCase().includes(query.toLowerCase())
  *   }
  *   renderItem={(item, highlighted) => (
- *     <div className={highlighted ? "bg-zinc-800" : ""}>
+ *     <div className={highlighted ? "bg-gray-100 dark:bg-zinc-800" : ""}>
  *       {item.label}
  *     </div>
  *   )}
@@ -113,12 +113,12 @@ export default function SearchSelect<T>({
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500 mb-2"
+        className="w-full bg-white dark:bg-zinc-950 border border-gray-300 dark:border-zinc-700 rounded-md px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 placeholder:text-gray-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500 mb-2"
         autoFocus={autoFocus}
       />
       <div
         ref={listRef}
-        className="max-h-40 overflow-y-auto border border-zinc-800 rounded-md divide-y divide-zinc-800/50"
+        className="max-h-40 overflow-y-auto border border-gray-200 dark:border-zinc-800 rounded-md divide-y divide-gray-100 dark:divide-zinc-800/50"
       >
         {visible.map((item, i) => (
           <div
@@ -130,7 +130,7 @@ export default function SearchSelect<T>({
           </div>
         ))}
         {filtered.length === 0 && (
-          <div className="px-3 py-2 text-xs text-zinc-600">{emptyMessage}</div>
+          <div className="px-3 py-2 text-xs text-gray-400 dark:text-zinc-600">{emptyMessage}</div>
         )}
       </div>
     </>

@@ -18,7 +18,7 @@ export default function MobileNav() {
     <div className="sm:hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-9 h-9 flex items-center justify-center text-zinc-400 hover:text-zinc-200 rounded-md hover:bg-zinc-800 transition-colors"
+        className="w-9 h-9 flex items-center justify-center text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
         aria-label="Menu"
       >
         {open ? (
@@ -36,11 +36,11 @@ export default function MobileNav() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 top-14 bg-black/50 z-40"
+            className="fixed inset-0 top-14 bg-black/30 dark:bg-black/50 z-40"
             onClick={() => setOpen(false)}
           />
           {/* Dropdown */}
-          <div className="absolute top-14 right-0 left-0 bg-zinc-900 border-b border-zinc-800 z-50 py-2">
+          <div className="absolute top-14 right-0 left-0 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 z-50 py-2">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -48,8 +48,8 @@ export default function MobileNav() {
                 onClick={() => setOpen(false)}
                 className={`block px-5 py-3 text-sm font-medium transition-colors ${
                   pathname === link.href
-                    ? "text-blue-400 bg-blue-500/10"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
+                    ? "text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10"
+                    : "text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800"
                 }`}
               >
                 {link.label}

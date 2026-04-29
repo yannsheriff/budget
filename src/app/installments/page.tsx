@@ -43,7 +43,7 @@ export default function InstallmentsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-zinc-500">Chargement...</div>
+        <div className="text-gray-400 dark:text-zinc-500">Chargement...</div>
       </div>
     );
   }
@@ -57,8 +57,8 @@ export default function InstallmentsPage() {
 
       {installments.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-zinc-500 text-sm">Aucun paiement échelonné</p>
-          <p className="text-zinc-600 text-xs mt-2">
+          <p className="text-gray-500 dark:text-zinc-500 text-sm">Aucun paiement échelonné</p>
+          <p className="text-gray-400 dark:text-zinc-600 text-xs mt-2">
             Créez-en un depuis la section &quot;Dépenses diverses&quot; d&apos;un mois.
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function InstallmentsPage() {
 
       {active.length > 0 && (
         <div className="mb-8">
-          <p className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-3">
+          <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-zinc-500 font-semibold mb-3">
             En cours ({active.length})
           </p>
           <div className="space-y-3">
@@ -79,7 +79,7 @@ export default function InstallmentsPage() {
 
       {completed.length > 0 && (
         <div>
-          <p className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-3">
+          <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-zinc-500 font-semibold mb-3">
             Terminés ({completed.length})
           </p>
           <div className="space-y-3">
@@ -103,7 +103,7 @@ function InstallmentCard({
   const progress = (inst.paid / inst.nbMonths) * 100;
 
   return (
-    <div className="bg-zinc-800/40 border border-zinc-700/50 rounded-xl p-5 group">
+    <div className="bg-gray-50 dark:bg-zinc-800/40 border border-gray-200 dark:border-zinc-700/50 rounded-xl p-5 group">
       <div className="flex items-center justify-between mb-3">
         <span className="text-base font-bold">{inst.label}</span>
         <div className="flex items-center gap-3">
@@ -113,7 +113,7 @@ function InstallmentCard({
           {!inst.isComplete && (
             <button
               onClick={() => onDelete(inst.id)}
-              className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-md flex items-center justify-center text-zinc-500 hover:bg-red-500/10 hover:text-red-400 transition-all text-sm"
+              className="sm:opacity-0 sm:group-hover:opacity-100 w-7 h-7 rounded-md flex items-center justify-center text-gray-400 dark:text-zinc-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 dark:hover:text-red-400 transition-all text-sm"
               title="Supprimer"
             >
               ✕
@@ -122,7 +122,7 @@ function InstallmentCard({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-400 mb-3">
+      <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-500 dark:text-zinc-400 mb-3">
         <span>{formatEur(inst.amountPerMonth)} / mois</span>
         <span>
           {inst.paid} sur {inst.nbMonths} payés
@@ -130,10 +130,10 @@ function InstallmentCard({
         <span>Fin : {getMonthLabel(inst.endYear, inst.endMonth)}</span>
       </div>
 
-      <div className="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
+      <div className="w-full h-1 bg-gray-200 dark:bg-zinc-900 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all ${
-            inst.isComplete ? "bg-emerald-400" : "bg-blue-500"
+            inst.isComplete ? "bg-emerald-500 dark:bg-emerald-400" : "bg-blue-500"
           }`}
           style={{ width: `${progress}%` }}
         />

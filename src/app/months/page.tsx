@@ -27,7 +27,7 @@ export default function MonthsListPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
-        <div className="text-zinc-500">Chargement...</div>
+        <div className="text-gray-400 dark:text-zinc-500">Chargement...</div>
       </div>
     );
   }
@@ -40,7 +40,7 @@ export default function MonthsListPage() {
 
       {months.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-zinc-500 text-sm">Aucun mois créé</p>
+          <p className="text-gray-500 dark:text-zinc-500 text-sm">Aucun mois créé</p>
         </div>
       )}
 
@@ -56,24 +56,24 @@ export default function MonthsListPage() {
             <button
               key={m.id}
               onClick={() => router.push(`/month/${m.id}`)}
-              className="w-full flex items-center justify-between bg-zinc-800/40 border border-zinc-700/50 rounded-xl px-5 py-4 hover:border-blue-500/40 hover:bg-zinc-700/20 transition-all text-left group"
+              className="w-full flex items-center justify-between bg-gray-50 dark:bg-zinc-800/40 border border-gray-200 dark:border-zinc-700/50 rounded-xl px-5 py-4 hover:border-blue-400 dark:hover:border-blue-500/40 hover:bg-gray-100 dark:hover:bg-zinc-700/20 transition-all text-left group"
             >
               <div className="flex flex-col gap-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span
                     className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
                       summary.status === "green"
-                        ? "bg-emerald-400"
+                        ? "bg-emerald-500 dark:bg-emerald-400"
                         : summary.status === "orange"
-                        ? "bg-amber-400"
-                        : "bg-red-400"
+                        ? "bg-amber-500 dark:bg-amber-400"
+                        : "bg-red-500 dark:bg-red-400"
                     }`}
                   />
-                  <span className="text-base font-semibold group-hover:text-blue-400 transition-colors">
+                  <span className="text-base font-semibold group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                     {label}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500 pl-[18px]">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-zinc-500 pl-[18px]">
                   <span>Budget : {formatEur(summary.budgetReel)}</span>
                   <span>Dépenses : {formatEur(summary.totalRecurring + summary.totalEveryday + summary.totalDiverse)}</span>
                   <span>Épargne : {formatEur(totalSavingsWithRemainder)}</span>
@@ -82,10 +82,10 @@ export default function MonthsListPage() {
               <span
                 className={`text-lg font-bold tabular-nums flex-shrink-0 ${
                   summary.status === "green"
-                    ? "text-emerald-400"
+                    ? "text-emerald-600 dark:text-emerald-400"
                     : summary.status === "orange"
-                    ? "text-amber-400"
-                    : "text-red-400"
+                    ? "text-amber-600 dark:text-amber-400"
+                    : "text-red-600 dark:text-red-400"
                 }`}
               >
                 {summary.reste >= 0 ? "+" : ""}

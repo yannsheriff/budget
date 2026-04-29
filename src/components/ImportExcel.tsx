@@ -95,8 +95,8 @@ export default function ImportExcel({ onImported }: Props) {
         onClick={() => fileRef.current?.click()}
         className={`border-2 border-dashed rounded-xl px-6 py-8 text-center cursor-pointer transition-all ${
           dragOver
-            ? "border-blue-500 bg-blue-500/10"
-            : "border-zinc-700/50 hover:border-zinc-600 hover:bg-zinc-800/30"
+            ? "border-blue-500 bg-blue-50 dark:bg-blue-500/10"
+            : "border-gray-300 dark:border-zinc-700/50 hover:border-gray-400 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/30"
         } ${uploading ? "opacity-50 pointer-events-none" : ""}`}
       >
         <input
@@ -110,15 +110,15 @@ export default function ImportExcel({ onImported }: Props) {
         {uploading ? (
           <div className="flex flex-col items-center gap-2">
             <span className="w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-zinc-400">Import en cours...</p>
+            <p className="text-sm text-gray-500 dark:text-zinc-400">Import en cours...</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
             <span className="text-2xl">📂</span>
-            <p className="text-sm text-zinc-400">
-              <span className="text-blue-400 font-medium">Cliquez</span> ou glissez un fichier Excel pour importer un mois
+            <p className="text-sm text-gray-500 dark:text-zinc-400">
+              <span className="text-blue-500 dark:text-blue-400 font-medium">Cliquez</span> ou glissez un fichier Excel pour importer un mois
             </p>
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-gray-400 dark:text-zinc-600">
               Format attendu : &quot;Mois Année.xlsx&quot; (ex: Mars 2026.xlsx)
             </p>
           </div>
@@ -127,11 +127,11 @@ export default function ImportExcel({ onImported }: Props) {
 
       {/* Import result summary */}
       {result && (
-        <div className="mt-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-5 py-4">
-          <p className="text-sm font-semibold text-emerald-400 mb-2">
+        <div className="mt-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl px-5 py-4">
+          <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-2">
             {MONTH_NAMES[result.month]} {result.year} importé avec succès
           </p>
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-zinc-400">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-500 dark:text-zinc-400">
             <span>Salaire : {result.salary} €</span>
             {result.overdraft > 0 && <span>Découvert : {result.overdraft} €</span>}
             <span>{result.recurringCount} charges récurrentes</span>
@@ -143,7 +143,7 @@ export default function ImportExcel({ onImported }: Props) {
           </div>
           <button
             onClick={() => router.push(`/month/${result.monthId}?categorize=1`)}
-            className="mt-3 text-xs font-medium text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+            className="mt-3 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline underline-offset-2"
           >
             🏷️ Catégoriser les dépenses →
           </button>

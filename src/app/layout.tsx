@@ -7,7 +7,10 @@ import Providers from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const viewport: Viewport = {
-  themeColor: "#09090b",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -29,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="dark">
+    <html lang="fr">
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -37,7 +40,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} bg-[#0f1117] text-zinc-200 antialiased`}>
+      <body className={`${inter.className} bg-white text-gray-900 dark:bg-[#0f1117] dark:text-zinc-200 antialiased`}>
         <Providers>
           <NavBar />
           {children}

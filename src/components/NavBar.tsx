@@ -10,8 +10,8 @@ export default function NavBar() {
 
   return (
     <div className={hidden ? "hidden" : ""}>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur border-b border-zinc-800 h-14 flex items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="text-base font-bold text-blue-400 tracking-tight">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur border-b border-gray-200 dark:border-zinc-800 h-14 flex items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="text-base font-bold text-blue-500 dark:text-blue-400 tracking-tight">
           Budget Forecast
         </Link>
 
@@ -19,19 +19,19 @@ export default function NavBar() {
         <div className="hidden sm:flex gap-1">
           <Link
             href="/"
-            className="text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 px-3 py-1.5 rounded-md transition-colors"
+            className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-md transition-colors"
           >
             Mois courant
           </Link>
           <Link
             href="/months"
-            className="text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 px-3 py-1.5 rounded-md transition-colors"
+            className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-md transition-colors"
           >
             Tous les mois
           </Link>
           <Link
             href="/installments"
-            className="text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 px-3 py-1.5 rounded-md transition-colors"
+            className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-md transition-colors"
           >
             Échéanciers
           </Link>

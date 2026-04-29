@@ -42,20 +42,20 @@ export default function HomePage() {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <div className="text-center max-w-md">
-          <h1 className="text-xl font-bold text-zinc-200 mb-3">Configuration requise</h1>
-          <p className="text-sm text-zinc-500 mb-6">{error}</p>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-left">
-            <p className="text-xs text-zinc-500 mb-2">
-              Fichier <code className="text-blue-400">.env</code> :
+          <h1 className="text-xl font-bold mb-3">Configuration requise</h1>
+          <p className="text-sm text-gray-500 dark:text-zinc-500 mb-6">{error}</p>
+          <div className="bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-4 text-left">
+            <p className="text-xs text-gray-500 dark:text-zinc-500 mb-2">
+              Fichier <code className="text-blue-500 dark:text-blue-400">.env</code> :
             </p>
-            <pre className="text-xs text-zinc-400 font-mono whitespace-pre-wrap">
+            <pre className="text-xs text-gray-500 dark:text-zinc-400 font-mono whitespace-pre-wrap">
 {`DATABASE_URL="postgresql://..."
 DIRECT_URL="postgresql://..."`}
             </pre>
           </div>
-          <p className="text-xs text-zinc-500 mt-4">
+          <p className="text-xs text-gray-500 dark:text-zinc-500 mt-4">
             Puis lancez{" "}
-            <code className="text-blue-400">npx prisma db push</code> pour créer les
+            <code className="text-blue-500 dark:text-blue-400">npx prisma db push</code> pour créer les
             tables.
           </p>
         </div>
@@ -65,7 +65,7 @@ DIRECT_URL="postgresql://..."`}
 
   return (
     <div className="flex items-center justify-center h-[80vh]">
-      <div className="text-zinc-500">Chargement...</div>
+      <div className="text-gray-400 dark:text-zinc-500">Chargement...</div>
     </div>
   );
 }

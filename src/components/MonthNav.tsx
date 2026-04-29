@@ -29,7 +29,7 @@ export default function MonthNav({ year, month }: Props) {
     <div className="flex items-center gap-4 mb-6">
       <button
         onClick={() => navigateTo(prev.year, prev.month)}
-        className="w-9 h-9 bg-zinc-800/60 border border-zinc-700/50 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/40 transition-colors text-base"
+        className="w-9 h-9 bg-gray-100 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/50 rounded-lg flex items-center justify-center text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-zinc-200 hover:bg-gray-200 dark:hover:bg-zinc-700/40 transition-colors text-base"
       >
         ←
       </button>

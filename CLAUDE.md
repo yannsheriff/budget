@@ -6,7 +6,7 @@ Application de prévision budgétaire mensuelle personnelle, remplaçant un hist
 
 - **Framework** : Next.js 14+ (App Router), TypeScript
 - **ORM** : Prisma 5+ avec PostgreSQL (Neon serverless)
-- **Styling** : Tailwind CSS, dark mode uniquement
+- **Styling** : Tailwind CSS, thème clair/sombre adaptatif (`prefers-color-scheme`)
 - **Auth** : JWT via `jose` (Edge Runtime compatible), middleware Next.js, cookie httpOnly 90 jours
 - **Déploiement** : Vercel (build: `prisma generate && next build`)
 - **Dépendances notables** : `xlsx` (SheetJS) pour l'import Excel, `jose` pour JWT
@@ -22,7 +22,7 @@ src/
 │   ├── month/[id]/page.tsx     # Vue principale d'un mois
 │   ├── installments/page.tsx   # Échéanciers en cours
 │   ├── login/
-│   │   ├── page.tsx            # Page login (dark, lock icon)
+│   │   ├── page.tsx            # Page login (lock icon)
 │   │   └── layout.tsx          # Layout vide (pas de nav)
 │   └── api/
 │       ├── auth/login/route.ts          # POST login → JWT cookie
@@ -109,7 +109,7 @@ JWT_SECRET=...                     # Secret pour signer les JWT
 
 ## Conventions de code
 
-- Dark mode uniquement (bg-zinc-950, text-zinc-200, etc.)
+- Thème adaptatif : classes Tailwind avec variantes `dark:` (ex. `bg-white dark:bg-zinc-950`, `text-gray-900 dark:text-zinc-200`)
 - Composants client avec `"use client"` directive
 - Toutes les mutations passent par `/api/` routes
 - `useToast()` pour le feedback utilisateur après chaque action

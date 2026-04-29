@@ -21,19 +21,19 @@ export default function IncomeDrawer({ open, onClose, monthId, salary, overdraft
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/30 dark:bg-black/50 z-40 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 bottom-0 w-full sm:w-[440px] bg-zinc-950 border-l border-zinc-800 z-50 flex flex-col animate-slide-in">
+      <div className="fixed top-0 right-0 bottom-0 w-full sm:w-[440px] bg-white dark:bg-zinc-950 border-l border-gray-200 dark:border-zinc-800 z-50 flex flex-col animate-slide-in">
         {/* Header */}
-        <div className="px-5 pt-5 pb-4 border-b border-zinc-800 flex-shrink-0">
+        <div className="px-5 pt-5 pb-4 border-b border-gray-200 dark:border-zinc-800 flex-shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold tracking-tight">💰 Revenus</h2>
             <button
               onClick={onClose}
-              className="text-zinc-500 hover:text-zinc-300 text-xl leading-none p-1"
+              className="text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 text-xl leading-none p-1"
             >
               ✕
             </button>

@@ -19,6 +19,16 @@ body {
   transition-timing-function: ease;
 }
 
+/* Empêche le zoom auto iOS Safari sur focus d'un champ (déclenché si font-size < 16px).
+   On force 16px sur mobile uniquement ; le desktop garde le rendu compact (text-sm). */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 /* Remove number input spinners */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

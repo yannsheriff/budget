@@ -59,7 +59,7 @@ export default function InstallmentsPage() {
         <div className="text-center py-16">
           <p className="text-gray-500 dark:text-zinc-500 text-sm">Aucun paiement échelonné</p>
           <p className="text-gray-400 dark:text-zinc-600 text-xs mt-2">
-            Créez-en un depuis la section &quot;Dépenses diverses&quot; d&apos;un mois.
+            Créez-en un via le bouton &quot;+ Dépense&quot; d&apos;un mois (type Diverse → Échelonné).
           </p>
         </div>
       )}

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ExpenseData, ExpenseType, ExpenseFrequency } from "@/types";
+import { useState } from "react";
+import { ExpenseData, ExpenseType } from "@/types";
 import { formatEur } from "@/lib/formatters";
-import { createExpense, updateExpense, deleteExpense, updateMonth } from "@/lib/api";
+import { updateExpense, deleteExpense, updateMonth } from "@/lib/api";
 import { getWeeksInMonth } from "@/lib/weeks";
 import { useToast } from "@/components/Toast";
 
@@ -17,7 +17,6 @@ type Props = {
   icon: string;
   showConfirm?: boolean;
   showCategory?: boolean;
-  showFrequency?: boolean;
   filterReconciliation?: "only" | "exclude";
   onUpdate: () => void;
 };
@@ -37,18 +36,11 @@ export default function ExpenseList({
   icon,
   showConfirm = false,
   showCategory = false,
-  showFrequency = false,
   filterReconciliation,
   onUpdate,
 }: Props) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [newLabel, setNewLabel] = useState("");
-  const [newAmount, setNewAmount] = useState("");
-  const [newFrequency, setNewFrequency] = useState<ExpenseFrequency>("MONTHLY");
-  const [newCategory, setNewCategory] = useState("");
-  const [categorySuggestions, setCategorySuggestions] = useState<string[]>([]);
 
   let filtered = expenses.filter((e) => e.type === type);
   if (filterReconciliation === "only") {
@@ -60,40 +52,8 @@ export default function ExpenseList({
 
   const total = filtered.reduce((sum, e) => sum + getEffectiveAmount(e, weeks), 0);
 
-  // Fetch category suggestions when adding with category
-  useEffect(() => {
-    if (showCategory && isAdding) {
-      fetch("/api/categories")
-        .then((r) => r.json())
-        .then(setCategorySuggestions)
-        .catch(() => {});
-    }
-  }, [showCategory, isAdding]);
-
   // Group by category for display (only when showCategory)
   const grouped = showCategory ? groupByCategory(filtered) : null;
-
-  async function handleAdd() {
-    if (!newLabel || !newAmount) return;
-    try {
-      await createExpense({
-        monthId,
-        type,
-        label: newLabel,
-        amount: parseFloat(newAmount),
-        frequency: showFrequency ? newFrequency : "MONTHLY",
-        category: newCategory || undefined,
-      });
-      setNewLabel("");
-      setNewAmount("");
-      setNewFrequency("MONTHLY");
-      setNewCategory("");
-      setIsAdding(false);
-      onUpdate();
-    } catch (err) {
-      toast((err as Error).message || "Erreur lors de l'ajout", "error");
-    }
-  }
 
   async function handleDelete(id: string) {
     try {
@@ -208,6 +168,11 @@ export default function ExpenseList({
 
       {open && (
         <>
+          {filtered.length === 0 && (
+            <div className="px-4 py-4 text-sm text-gray-400 dark:text-zinc-600 border-t border-gray-200 dark:border-zinc-700/50">
+              Aucune dépense — utilisez le bouton + pour en ajouter.
+            </div>
+          )}
           {/* Grouped view */}
           {grouped
             ? Object.entries(grouped).map(([category, items]) => {
@@ -230,91 +195,7 @@ export default function ExpenseList({
                 );
               })
             : filtered.map(renderExpenseRow)}
-
-          {/* Add form */}
-          {isAdding ? (
-            <div className="px-4 py-3 border-t border-gray-200 dark:border-zinc-700/50 space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Libellé"
-                  value={newLabel}
-                  onChange={(e) => setNewLabel(e.target.value)}
-                  className="flex-1 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500"
-                  autoFocus
-                />
-                <input
-                  type="number"
-                  placeholder="Montant"
-                  value={newAmount}
-                  onChange={(e) => setNewAmount(e.target.value)}
-                  className="w-28 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-right"
-                />
-                <span className="text-sm text-gray-500 dark:text-zinc-500 self-center">€</span>
-              </div>
-              <div className="flex gap-2 items-center flex-wrap">
-                {showFrequency && (
-                  <select
-                    value={newFrequency}
-                    onChange={(e) =>
-                      setNewFrequency(e.target.value as ExpenseFrequency)
-                    }
-                    className="bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none"
-                  >
-                    <option value="MONTHLY">Mensuel</option>
-                    <option value="WEEKLY">Hebdomadaire</option>
-                  </select>
-                )}
-                {showCategory && (
-                  <>
-                    <input
-                      type="text"
-                      placeholder="Catégorie"
-                      list={`category-suggestions-${type}`}
-                      value={newCategory}
-                      onChange={(e) => setNewCategory(e.target.value)}
-                      className="flex-1 min-w-[120px] bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500"
-                    />
-                    <datalist id={`category-suggestions-${type}`}>
-                      {categorySuggestions.map((cat) => (
-                        <option key={cat} value={cat} />
-                      ))}
-                    </datalist>
-                  </>
-                )}
-                <button
-                  onClick={handleAdd}
-                  className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                >
-                  Ajouter
-                </button>
-                <button
-                  onClick={() => setIsAdding(false)}
-                  className="text-gray-500 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 text-sm transition-colors"
-                >
-                  Annuler
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsAdding(true)}
-              className="w-full py-2.5 text-sm text-gray-500 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-zinc-700/20 transition-colors"
-            >
-              + Ajouter
-            </button>
-          )}
         </>
-      )}
-
-      {/* Add button when closed */}
-      {!open && (
-        <button
-          onClick={() => { setOpen(true); setIsAdding(true); }}
-          className="w-full py-2.5 text-sm text-gray-500 dark:text-zinc-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-zinc-700/20 transition-colors border-t border-gray-200 dark:border-zinc-700/50"
-        >
-          + Ajouter
-        </button>
       )}
     </div>
   );

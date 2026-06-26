@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { MonthData } from "@/types";
 import { calculateMonthSummary } from "@/lib/budget-calc";
@@ -10,7 +11,6 @@ import ExpenseList from "@/components/ExpenseList";
 import IncomeDrawer from "@/components/IncomeDrawer";
 import EverydayLifeInput from "@/components/EverydayLifeInput";
 import ConfirmBanner from "@/components/ConfirmBanner";
-import InstallmentForm from "@/components/InstallmentForm";
 import CategoryDrawer from "@/components/CategoryDrawer";
 
 export default function MonthPage() {
@@ -144,7 +144,6 @@ export default function MonthPage() {
           icon="🔁"
           showConfirm
           showCategory
-          showFrequency
           onUpdate={fetchMonth}
         />
 
@@ -170,9 +169,6 @@ export default function MonthPage() {
           showCategory
           onUpdate={fetchMonth}
         />
-
-        {/* Installment form */}
-        <InstallmentForm monthId={monthData.id} onCreated={fetchMonth} />
 
         {/* Savings */}
         <ExpenseList
@@ -227,6 +223,15 @@ export default function MonthPage() {
           setDrawerOpen(false);
         }}
       />
+
+      {/* Bouton flottant — ajout d'une dépense */}
+      <Link
+        href={`/month/${id}/add`}
+        aria-label="Ajouter une dépense"
+        className="fixed bottom-6 right-6 z-40 flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-full shadow-lg shadow-blue-600/30 transition-all"
+      >
+        <span className="text-3xl leading-none font-light pb-0.5">+</span>
+      </Link>
     </div>
   );
 }

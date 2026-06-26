@@ -19,6 +19,7 @@ const TYPE_LABEL: Record<ExpenseType, string> = {
   SAVINGS: "Épargne",
 };
 
+// Étapes du wizard : Type → Prix → Nom (→ Catégorie sauf échelonné)
 export default function AddExpensePage() {
   const params = useParams();
   const router = useRouter();
@@ -51,19 +52,23 @@ export default function AddExpensePage() {
       ? Math.round((amountNum / monthsNum) * 100) / 100
       : 0;
 
-  // Échelonné : pas de catégorie (non supportée par le modèle) → seulement 2 étapes
-  const totalSteps = showInstallment ? 2 : 3;
+  // Échelonné : pas de catégorie (non supportée par le modèle) → étape Catégorie sautée
+  const totalSteps = showInstallment ? 3 : 4;
 
-  const step1Valid = !!type;
-  const step2Valid =
-    label.trim().length > 0 &&
-    amountNum > 0 &&
-    (!showInstallment || monthsNum >= 2);
-  const canSubmit = step1Valid && step2Valid && !submitting;
+  const step1Valid = !!type; // Type
+  const step2Valid = amountNum > 0 && (!showInstallment || monthsNum >= 2); // Prix
+  const step3Valid = label.trim().length > 0; // Nom
+  const canSubmit = step1Valid && step2Valid && step3Valid && !submitting;
+
+  function currentStepValid() {
+    if (step === 1) return step1Valid;
+    if (step === 2) return step2Valid;
+    if (step === 3) return step3Valid;
+    return true;
+  }
 
   function goNext() {
-    if (step === 1 && !step1Valid) return;
-    if (step === 2 && !step2Valid) return;
+    if (!currentStepValid()) return;
     setStep((s) => Math.min(s + 1, totalSteps));
   }
 
@@ -77,8 +82,7 @@ export default function AddExpensePage() {
 
   function selectType(t: ExpenseType) {
     setType(t);
-    // auto-avance pour la fluidité
-    setStep(2);
+    setStep(2); // auto-avance pour la fluidité
   }
 
   async function handleSubmit() {
@@ -113,6 +117,8 @@ export default function AddExpensePage() {
 
   const isLastStep = step === totalSteps;
   const amountFieldLabel = showInstallment ? "Montant total" : "Montant";
+  const stepTitle =
+    step === 1 ? "Type" : step === 2 ? "Prix" : step === 3 ? "Nom" : "Catégorie";
 
   return (
     <div className="fixed inset-0 z-[60] bg-white dark:bg-[#0f1117] flex flex-col">
@@ -125,7 +131,7 @@ export default function AddExpensePage() {
           >
             {step === 1 ? "Annuler" : "← Précédent"}
           </button>
-          <span className="text-[15px] font-bold">Nouvelle dépense</span>
+          <span className="text-[15px] font-bold">{stepTitle}</span>
           <span className="w-20 text-right text-xs font-medium text-gray-400 dark:text-zinc-500">
             Étape {step}/{totalSteps}
           </span>
@@ -174,24 +180,9 @@ export default function AddExpensePage() {
           </div>
         )}
 
-        {/* ── Étape 2 : Détails ── */}
+        {/* ── Étape 2 : Prix (+ fréquence / échelonné) ── */}
         {step === 2 && type && (
           <div className="space-y-6 animate-slide-up" key="step2">
-            {/* Libellé */}
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-zinc-500 mb-2 block">
-                Libellé
-              </label>
-              <input
-                type="text"
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-                placeholder="Ex : Loyer, Courses, Netflix…"
-                autoFocus
-                className="w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3.5 text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500"
-              />
-            </div>
-
             {/* Montant */}
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-zinc-500 mb-2 block">
@@ -204,9 +195,10 @@ export default function AddExpensePage() {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0"
-                  className="flex-1 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3.5 text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-right tabular-nums"
+                  autoFocus
+                  className="flex-1 bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3.5 text-2xl text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-right tabular-nums"
                 />
-                <span className="text-lg text-gray-500 dark:text-zinc-500">€</span>
+                <span className="text-2xl text-gray-500 dark:text-zinc-500">€</span>
               </div>
             </div>
 
@@ -287,9 +279,39 @@ export default function AddExpensePage() {
           </div>
         )}
 
-        {/* ── Étape 3 : Catégorie + récap (sauf échelonné) ── */}
-        {step === 3 && type && !showInstallment && (
+        {/* ── Étape 3 : Nom (+ récap si échelonné, dernière étape) ── */}
+        {step === 3 && type && (
           <div className="space-y-6 animate-slide-up" key="step3">
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-zinc-500 mb-2 block">
+                Nom
+              </label>
+              <input
+                type="text"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="Ex : Loyer, Courses, Netflix…"
+                autoFocus
+                className="w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-zinc-700 rounded-xl px-4 py-3.5 text-gray-900 dark:text-zinc-200 outline-none focus:border-blue-500"
+              />
+            </div>
+
+            {showInstallment && <Recap
+              type={type}
+              label={label}
+              amountNum={amountNum}
+              frequency={frequency}
+              showInstallment={showInstallment}
+              monthsNum={monthsNum}
+              perMonth={perMonth}
+              category={category}
+            />}
+          </div>
+        )}
+
+        {/* ── Étape 4 : Catégorie + récap (sauf échelonné) ── */}
+        {step === 4 && type && !showInstallment && (
+          <div className="space-y-6 animate-slide-up" key="step4">
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-zinc-500 mb-2 block">
                 Catégorie <span className="font-normal normal-case">(optionnel)</span>
@@ -323,16 +345,16 @@ export default function AddExpensePage() {
               />
             </div>
 
-            {/* Récap */}
-            <div className="rounded-xl border border-gray-200 dark:border-zinc-700/60 divide-y divide-gray-100 dark:divide-zinc-800 text-sm">
-              <RecapRow label="Type" value={`${TYPE_LABEL[type]}`} />
-              <RecapRow label="Libellé" value={label || "—"} />
-              <RecapRow label="Montant" value={formatEur(amountNum)} />
-              {type === "RECURRING" && (
-                <RecapRow label="Fréquence" value={frequency === "MONTHLY" ? "Mensuel" : "Hebdomadaire"} />
-              )}
-              <RecapRow label="Catégorie" value={category.trim() || "Aucune"} />
-            </div>
+            <Recap
+              type={type}
+              label={label}
+              amountNum={amountNum}
+              frequency={frequency}
+              showInstallment={showInstallment}
+              monthsNum={monthsNum}
+              perMonth={perMonth}
+              category={category}
+            />
           </div>
         )}
       </div>
@@ -358,13 +380,53 @@ export default function AddExpensePage() {
         ) : (
           <button
             onClick={goNext}
-            disabled={step === 1 ? !step1Valid : !step2Valid}
+            disabled={!currentStepValid()}
             className="flex-[2] bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white py-4 rounded-xl text-base font-bold transition-colors"
           >
             Suivant
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+function Recap({
+  type,
+  label,
+  amountNum,
+  frequency,
+  showInstallment,
+  monthsNum,
+  perMonth,
+  category,
+}: {
+  type: ExpenseType;
+  label: string;
+  amountNum: number;
+  frequency: ExpenseFrequency;
+  showInstallment: boolean;
+  monthsNum: number;
+  perMonth: number;
+  category: string;
+}) {
+  return (
+    <div className="rounded-xl border border-gray-200 dark:border-zinc-700/60 divide-y divide-gray-100 dark:divide-zinc-800 text-sm">
+      <RecapRow label="Type" value={TYPE_LABEL[type]} />
+      <RecapRow label="Nom" value={label.trim() || "—"} />
+      <RecapRow
+        label={showInstallment ? "Montant total" : "Montant"}
+        value={formatEur(amountNum)}
+      />
+      {type === "RECURRING" && (
+        <RecapRow label="Fréquence" value={frequency === "MONTHLY" ? "Mensuel" : "Hebdomadaire"} />
+      )}
+      {showInstallment && (
+        <RecapRow label="Échelonné" value={`${formatEur(perMonth)}/mois × ${monthsNum}`} />
+      )}
+      {!showInstallment && (
+        <RecapRow label="Catégorie" value={category.trim() || "Aucune"} />
+      )}
     </div>
   );
 }

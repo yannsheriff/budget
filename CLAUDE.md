@@ -8,7 +8,7 @@ Application de prévision budgétaire mensuelle personnelle, remplaçant un hist
 - **ORM** : Prisma 5+ avec PostgreSQL (Neon serverless)
 - **Styling** : Tailwind CSS, thème clair/sombre adaptatif (`prefers-color-scheme`)
 - **Auth** : JWT via `jose` (Edge Runtime compatible), middleware Next.js, cookie httpOnly 90 jours
-- **Déploiement** : Vercel (build: `prisma generate && next build`)
+- **Déploiement** : Vercel (build: `prisma generate && next build`). ⚠️ **Pas d'auto-déploiement Git** : `git push` ne déploie rien. Déployer manuellement avec `npx vercel --prod --yes`. URL de prod : https://budget-app-two-coral.vercel.app
 - **Dépendances notables** : `xlsx` (SheetJS) pour l'import Excel, `jose` pour JWT
 
 ## Structure du projet
